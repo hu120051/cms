@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>申请审批·车队管理系统</title>
+    <style>
+        .el-table .warning-row {
+            background: #ffe5e5;
+        }
+        .el-table .applying-row {
+            background: #ffffff;
+        }
+        .el-table .success-row {
+            background: #edffe8;
+        }
+    </style>
+    {include file="common/header"/}
+    <el-main>
+        <el-table :data="application" :row-class-name="tableRowClassName">
+            <el-table-column prop="applyid" label="ID" width="50%" align="center">
+            </el-table-column>
+            <el-table-column prop="name" label="申请人" width="80%" align="center">
+            </el-table-column>
+            <el-table-column prop="carid" label="申请车辆编号" width="110%" align="center">
+            </el-table-column>
+            <el-table-column prop="type" label="申请车辆类型" width="130%">
+            </el-table-column>
+            <el-table-column prop="license" label="申请车辆车牌号" align="center">
+            </el-table-column>
+            <el-table-column prop="start_date" label="使用开始时间">
+            </el-table-column>
+            <el-table-column prop="end_date" label="使用归还时间">
+            </el-table-column>
+            <el-table-column prop="remark" label="备注">
+            </el-table-column>
+            <el-table-column prop="status" label="状态">
+            </el-table-column>
+            <el-table-column label="审批" width="180">
+                <template slot-scope="scope">
+                    <el-button v-if="scope.row.status=='applying'|scope.row.status=='fail'"
+                            size="mini"
+                            @click="passEdit(scope.row)">同意</el-button>
+                    <el-button v-if="scope.row.status=='applying'|scope.row.status=='pass'"
+                            size="mini"
+                            type="danger"
+                            @click="failEdit(scope.row)">拒绝</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+    </el-main>
+
+    {include file="common/footer"/}
+    <script>
+        new Vue({
+            el: '#app',
+            data:{
+                username:"",
+                application:{
+
+                },
+            },
+            mounted () {
+                // this.baiduMap();
+                // this.username = getCookie('username');
+                this.abcd();
+                this.abc();
+            },
+
+            methods: {
+                logOut() {
+                    var that = this;
+                    axios.post('user/logout')
+                        .then(function (response)
+                        {
+                            if (response.data.code == 200) {
+                                that.$message({
+                                    message: '退出成功,正在跳转中',
+                                    type: 'success'
+                                });
+                                setTimeout(function () {
+                                    location.replace('');
+                                }, 1000)
+                            } else {
+                                that.$message.error(response.data.msg);
+                            }
+                        })
+                        .catch(function (error)
+                        {
+                            that.$message.error('tuichu失败，服务器内部错误');
+                        })
+                    ;
+
+                },
+                abc(){
+                    var that = this;
+                    axios.post('application/getallapplication')
+                        .then(function (response)
+                        {
+                            that.application = response.data.data;
+                        })
+
+                },
+                abcd(){
+                    var that = this;
+                    axios.post('user/getmyvalue')
+                        .then(function (response)
+                        {
+                            that.username = response.data.data.name;
+                        })
+                },
+                passEdit(row){
+                    var that = this;
+                    axios.post('application/pass', Object.assign({}, PostBase, {
+                        pk: row.applyid,
+                        userid : row.userid,
+                        carid : row.carid,
+                        start_date : row.start_date,
+                        end_date : row.end_date,
+                    }))
+                        .then(function (response) {
+                            if (response.data.code == CODE_SUCCESS) {
+                                that.$message({
+                                    message: response.data.msg,
+                                    type: 'success'
+                                });
+                                setTimeout(function () {
+                                    location.replace('');
+                                }, 1000)
+                            } else {
+                                that.$message.error(response.data.msg);
+                            }
+                        })
+                        .catch(function (error) {
+                            that.$message.error('服务器内部错误');
+                            console.log(error);
+                        });
+                },
+                failEdit(row){
+                    var that = this;
+                    axios.post('application/fail', Object.assign({}, PostBase, {
+                        pk: row.applyid,
+                        userid : row.userid,
+                        carid : row.carid,
+                        start_date : row.start_date,
+                        end_date : row.end_date,
+                    }))
+                        .then(function (response) {
+                            if (response.data.code == CODE_SUCCESS) {
+                                that.$message({
+                                    message: response.data.msg,
+                                    type: 'success'
+                                });
+                                setTimeout(function () {
+                                    location.replace('');
+                                }, 1000)
+                            } else {
+                                that.$message.error(response.data.msg);
+                            }
+                        })
+                        .catch(function (error) {
+                            that.$message.error('服务器内部错误');
+                            console.log(error);
+                        });
+                },
+                tableRowClassName({row}) {
+                    if (row.status === 'fail') {
+                        return 'warning-row';
+                    }
+                    else if(row.status === 'pass'){
+                        return 'success-row'
+                    }
+                    return '';
+                }
+            }
+        })
+    </script>
+
+</html>

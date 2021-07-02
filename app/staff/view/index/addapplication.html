@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>用车申请·车队管理系统</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!-- import CSS -->
+    <link rel="stylesheet" href="/static/css/vant.css">
+    <link rel="stylesheet" href="/static/css/StartAdmin.css">
+
+</head>
+
+<body>
+<div id="app">
+    <van-row>
+        <van-nav-bar title="添加申请"  left-text="返回" @click-left='cancel'/>
+    </van-row>
+    <van-form @submit="onSubmit">
+        <van-field
+                readonly
+                clickable
+                label="车辆编号"
+                :value="form.carid"
+                placeholder="选择车辆"
+                @click="showPicker = true"
+        ></van-field>
+        <van-popup v-model="showPicker" round position="bottom">
+
+            <van-picker
+
+                    show-toolbar
+                    :columns="car"
+                    @cancel="showPicker = false"
+                    @confirm="onCarConfirm"
+            />
+        <!--利用插槽slot来实现展示车辆详细信息-->
+            <template #option="item">
+                <van-row>
+                    <van-col>
+                        <p style="text-align: center">
+                            {{ item.cid }}:
+                            {{ item.license }}
+                            {{ item.brand }}
+                            {{ item.type }}
+                        </p>
+                    </van-col>
+                </van-row>
+            </template>
+            </van-picker>
+        </van-popup>
+
+
+        <van-field
+                readonly
+                clickable
+                name="calendar"
+                :value="dateput"
+                label="使用时间"
+                placeholder="点击选择日期"
+                @click="showCalendar = true"
+        ></van-field>
+
+        <van-calendar v-model="showCalendar" type="range" allow-same-day @confirm="onCalendarConfirm" ></van-calendar>
+
+        <van-field
+                v-model="form.remark"
+                rows="2"
+                autosize
+                label="备注(选填)"
+                type="textarea"
+                maxlength="50"
+                placeholder="请输入备注"
+                show-word-limit
+        ></van-field>
+
+        <div style="margin: 16px;">
+            <van-button round block type="info" native-type="submit">提交</van-button>
+        </div>
+    </van-form>
+
+</div>
+</body>
+<script src="/static/js/vue-2.6.10.min.js"></script>
+<script src="/static/js/axios.min.js"></script>
+<script src="/static/js/vant.min.js"></script>
+<script src="/static/js/StartAdmin.js"></script>
+    <script>
+
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    form:{
+                        carid:"",
+                        start_date:"",
+                        end_date:"",
+                        remark:"",
+                    },
+                    showCalendar:false,
+                    showPicker: false,
+                    car:[
+                    ],
+                    dateput:'',
+                }
+            },
+            mounted () {
+                this.abc();
+            },
+            methods: {
+                cancel(){
+                    location.href='apply';
+                },
+                abc(){
+                    var that = this;
+                    axios.post('/admin/car/getallcar')
+                        .then(function (response)
+                        {
+                            that.car= response.data.data;
+                            var i;
+                            for(i in that.car){
+                                switch(that.car[i].type) {
+                                    case 'small_passenger': that.car[i].type = "小型客车";break;
+                                    case 'mid_passenger':   that.car[i].type = "中型客车";break;
+                                    case 'large_passenger': that.car[i].type = "大型客车";break;
+                                    case 'small_cargo':     that.car[i].type = "小型货车";break;
+                                    case 'mid_cargo':       that.car[i].type = "中型货车";break;
+                                    case 'large_cargo':     that.car[i].type = "大型货车";break;
+                                }
+                            }
+                        })
+
+                },
+                onSubmit(){
+                    var that = this;
+                    if(!that.form.carid|!that.form.start_date|!that.form.end_date){
+                        alert("请完善信息！");
+                        return;
+                    }
+                    axios.post('worker/addapplication', Object.assign({}, PostBase, that.form))
+                        .then(function (response) {
+                            if (response.data.code == CODE_SUCCESS) {
+                                alert('添加成功，即将回到上页')
+                                setTimeout(()=>{   //设置延迟执行
+                                    location.href='apply';
+                                },500);
+                            } else {
+                                that.$message.error(response.data.msg);
+                            }
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+
+                },
+                onCarConfirm(value) {
+                    this.form.carid = value.cid;
+                    this.showPicker = false;
+                },
+                formatDate(date) {
+                    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+                },
+                onCalendarConfirm(date) {
+                    var that = this;
+                    const [start, end] = date;
+                    this.showCalendar = false;
+                    that.form.start_date = `${this.formatDate(start)}`;
+                    that.form.end_date = `${this.formatDate(end)}`;
+                    that.dateput = `${this.formatDate(start)} ~ ${this.formatDate(end)}`;
+                }
+            }
+        })
+
+
+    </script>
+
+</html>

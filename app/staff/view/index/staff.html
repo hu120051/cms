@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>职工主页·车队管理系统</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!-- import CSS -->
+    <link rel="stylesheet" href="/static/css/vant.css">
+    <link rel="stylesheet" href="/static/css/StartAdmin.css">
+
+</head>
+
+<body>
+    <div id="app">
+        <van-row>
+            <van-nav-bar title="主页"/>
+        </van-row>
+        <van-row type="flex" justify="center">
+            <img src="/static/images/logo.png" width="100px" height="100px">
+        </van-row>
+        <van-row type="flex" justify="center">
+            <h2 style="margin: 10px">欢迎您:{{user}}({{group}})</h2>
+        </van-row>
+        <van-row type="flex" justify="center">
+            <h3 style="margin: 10px">登录时间:{{update_time}}</h3>
+        </van-row>
+        {include file="common/footer"/}
+<script>
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                form: {
+                    username: "",
+                    password: ""
+                },
+                active:"",
+                user:"",
+                update_time:""
+            }
+        },
+        mounted () {
+            this.abcd();
+        },
+        methods: {
+            abcd(){
+                var that = this;
+                axios.post('/admin/user/getmyvalue')
+                    .then(function (response)
+                    {
+                        that.user = response.data.data.name;
+                        var a = response.data.data.group;
+                        that.update_time = response.data.data.update_time;
+                        if(a=='superadmin')
+                        {
+                            that.group = "超级管理员";
+                        }
+                        else if(a=="admin")
+                        {
+                            that.group = "管理员";
+                        }
+                        else if(a=='staff')
+                        {
+                            that.group = "员工";
+                        }
+                        else{
+                            that.group = "未知用户";
+                        }
+                    })
+
+            },
+        }
+    })
+
+
+</script>
+
+</html>

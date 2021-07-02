@@ -1,0 +1,172 @@
+<meta charset="UTF-8">
+<!-- import CSS -->
+<link rel="stylesheet" href="/static/css/element.css">
+<link rel="stylesheet" href="/static/css/StartAdmin.css">
+<style>
+    .text {
+        font-size: 14px;
+    }
+
+    .item {
+        margin-bottom: 18px;
+    }
+
+    .clearfix:before,
+    .clearfix:after {
+        display: table;
+        content: "";
+    }
+
+    .clearfix:after {
+        clear: both
+    }
+
+    .box-card {
+        margin: 10px 10px 10px 10px;
+    }
+</style>
+<style>
+    .el-footer {
+        background-color: #f5f5f5;
+        color: #333;
+        line-height: 60px;
+    }
+
+    .el-header {
+        background-color: #333;
+        color: #fff;
+        line-height: 60px;
+    }
+
+    .el-aside {
+        background-color: #fff;
+        color: #333;
+    }
+
+    .el-main {
+        background-color: #ffffff;
+        color: #333;
+        padding: 10px;
+    }
+
+    .el-select {
+        display: block;
+    }
+
+    .body {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0px;
+        top: 60px;
+    }
+
+    .el-header .title {
+        font-size: 20px;
+        font-weight: 500;
+        color: #fff;
+        text-decoration: none;
+    }
+
+    .el-header .topArea {
+        float: right;
+    }
+
+    .el-header .topArea a {
+        margin-right: 20px;
+        color: white;
+        cursor: pointer;
+    }
+
+    .pub_dialog {
+        display: flex;
+        justify-content: center;
+        align-items: Center;
+        overflow: hidden;
+    }
+
+    .pub_dialog .el-dialog {
+        margin: 0 auto !important;
+        height: 80%;
+        overflow: hidden;
+    }
+
+    .pub_dialog .el-dialog .el-dialog__body {
+        position: absolute;
+        left: 0;
+        top: 65px;
+        bottom: 65px;
+        right: 0;
+        padding: 0;
+        z-index: 1;
+        overflow: hidden;
+        overflow-y: auto;
+    }
+
+    .pub_dialog .el-dialog .el-dialog__footer {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+    }
+
+    .el-pagination {
+        margin-top: 10px;
+        text-align: right;
+    }
+    #container {
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        font-family: "微软雅黑";
+    }
+</style>
+</head>
+<body>
+<div id="app" v-cloak>
+    <el-container>
+        <el-header>
+            <el-link class="title" href="index" ><img height="60px" src="/static/images/mlogo.png" style="margin-left:10px"/>
+            </el-link>
+            <span class="topArea">
+                    <!-- <el-link :underline="false">消息管理</el-link> -->
+                    <el-dropdown>
+                        <el-link :underline="false" class="el-icon-user-solid">{{ username }}</el-link>
+                        <el-dropdown-menu slot="dropdown">
+
+                            <el-dropdown-item onclick="location.href='changepswd';">修改密码
+                            </el-dropdown-item>
+                            <!--                            <el-dropdown-item onclick="location.href='/admin/user/logout'>退出登录-->
+                            <!--                            </el-dropdown-item>-->
+                            <el-dropdown-item @click.native = "logOut">退出登录
+                            </el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
+                </span>
+        </el-header>
+    </el-container>
+
+    <el-container class="body">
+        <el-aside width="220px">
+            <el-menu class="el-menu-vertical-demo">
+                <el-submenu index="1">
+                    <template slot="title">
+                        <i class="el-icon-menu"></i>
+                        <span slot="title">用户管理</span>
+                    </template>
+                    <el-menu-item index="1-1" onclick="location.href='userinfo';">用户信息</el-menu-item>
+<!--                    <el-menu-item index="1-2">分组</el-menu-item>-->
+                </el-submenu>
+                <el-submenu index="2">
+                    <template slot="title">
+                        <i class="el-icon-menu"></i>
+                        <span slot="title">车辆管理</span>
+                    </template>
+                    <el-menu-item index="2-1" onclick="location.href='carinfo';">车辆信息</el-menu-item>
+                    <el-menu-item index="2-2" onclick="location.href='carlog';">用车记录</el-menu-item>
+                    <el-menu-item index="2-2" onclick="location.href='approval';">申请审批</el-menu-item>
+                    <el-menu-item index="2-3" onclick="location.href='location';">车辆监控</el-menu-item>
+                    <el-menu-item index="2-4" onclick="location.href='emergency';">事故处理</el-menu-item>
+                </el-submenu>
+            </el-menu>
+        </el-aside>

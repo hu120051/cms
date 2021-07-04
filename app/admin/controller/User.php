@@ -20,39 +20,24 @@ class User extends BaseController
 //            return View::fetch('login');
         //       }
 
-        if (!input("user_account"))
+        if (!input("password"))
         {
-            return jerr('请确认帐号是否正确填写', 400);
-        }
-        if (!input("user_password"))
-        {
-            return jerr('请确认密码是否正确填写', 400);
+            return jerr('请填写口令', 400);
         }
 // 另一种接收方式
 //        $params=json_decode(file_get_contents("php://input"),true);
 //        $username=$params['user_account'];
 //        return jerr($username);
-        $user_account = input("user_account");
-        $user_password = input("user_password");
-        $user = new \app\model\User;
-        $temp = $user->login($user_account,$user_password);
+        $password = input("password");
+        $user = new \app\model\Password;
+        $temp = $user->login($password);
 
-//        return jerr('执行完毕model查询'.$temp);     //测试
-        if($temp)
-        {
-            $data = $user->getmyvalue($user_account);
-            if($data['group'] == "admin"||$data['group'] == "superadmin"){
-                setCookie('username', $user_account, time() + 3600, '/');
-                setCookie('group', 'admin', time() + 3600, '/');
-                return jok('登录成功',$temp);
-            }
-            else{
-                return jerr('您不是管理员用户！',400);
-            }
+        if($temp){
+            setCookie('access', 'pass', time() + 3600, '/');
+            return jok("验证通过");
         }
-        else
-        {
-            return jerr('用户名或密码错误',400);
+        else{
+            return jerr("口令错误",400);
         }
     }
 

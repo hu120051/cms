@@ -45,7 +45,7 @@ abstract class BaseController
      */
     public function access()
     {
-        if (!cookie('username')||cookie('group')!='admin') {
+        if (cookie('access')!='pass') {
             return '123';
         }
     }

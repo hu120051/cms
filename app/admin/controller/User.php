@@ -60,10 +60,7 @@ class User extends BaseController
 
     public function logout()
     {
-        $user = new \app\model\User();
-        $user->logout(cookie('username'));
-        setCookie('username',null, time() + 3600, '/');
-        setCookie('group',null, time() + 3600, '/');
+        setCookie('access',null, time() + 3600, '/');
         return jok('退出成功');
     }
 

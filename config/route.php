@@ -5,7 +5,7 @@
 use think\facade\Route;
 Route::rule('changepswd','admin/index/changepswd');
 Route::rule('location','admin/index/location');
-Route::rule('userinfo','admin/index/userinfo');
+Route::rule('material','admin/index/material');
 Route::rule('carinfo','admin/index/carinfo');
 Route::rule('carlog','admin/index/carlog');
 Route::rule('approval','admin/index/approval');

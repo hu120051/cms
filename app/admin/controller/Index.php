@@ -39,18 +39,18 @@ class Index extends BaseController
     }
 
     /**
-     * 成员信息
+     * 物料
      *
      * @return string
      */
-    public function userinfo()
+    public function material()
     {
         $error = $this->access();
         if($error)
         {
             return View::fetch('login');
         }
-        return View::fetch('userinfo');
+        return View::fetch('material');
     }
 
     /**

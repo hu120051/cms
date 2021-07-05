@@ -6,8 +6,8 @@ use think\facade\Route;
 Route::rule('changepswd','admin/index/changepswd');
 Route::rule('purchase','admin/index/purchase');
 Route::rule('material','admin/index/material');
-Route::rule('carinfo','admin/index/carinfo');
-Route::rule('carlog','admin/index/carlog');
+Route::rule('bring','admin/index/bring');
+Route::rule('appraisal','admin/index/appraisal');
 Route::rule('approval','admin/index/approval');
 Route::rule('emergency','admin/index/emergency');
 

@@ -54,33 +54,33 @@ class Index extends BaseController
     }
 
     /**
-     * 车辆信息
+     * 物料出库
      *
      * @return string
      */
-    public function carinfo()
+    public function bring()
     {
         $error = $this->access();
         if($error)
         {
             return View::fetch('login');
         }
-        return View::fetch('carinfo');
+        return View::fetch('bring');
     }
 
     /**
-     * 用车记录
+     * 评审表记录
      *
      * @return string
      */
-    public function carlog()
+    public function appraisal()
     {
         $error = $this->access();
         if($error)
         {
             return View::fetch('login');
         }
-        return View::fetch('carlog');
+        return View::fetch('appraisal');
     }
 
     /**

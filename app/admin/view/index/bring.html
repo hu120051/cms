@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>进货记录·库存管理系统</title>
+  <title>物料出库·库存管理系统</title>
   <style>
 
   </style>
@@ -13,7 +13,7 @@
         <el-button type="primary" icon="el-icon-edit" size="small" @click="clickAdd">添加</el-button>
       </el-form-item>
     </el-form>
-    <el-table :data="purchase.slice((currentPage-1)*pageSize,currentPage*pageSize)">
+    <el-table :data="bring.slice((currentPage-1)*pageSize,currentPage*pageSize)" >
       <el-table-column prop="PurchaseID" label="ID" width="70%">
       </el-table-column>
       <el-table-column prop="SupplierID" label="供应商编号">
@@ -77,12 +77,12 @@
                 placeholder="选择日期">
         </el-date-picker>
       </el-form-item>
-    <el-form-item prop="Quantity" label="物料数量">
-      <el-input size="medium" autocomplete="off" v-model="formAdd.Quantity"></el-input>
-    </el-form-item>
-    <el-form-item prop="Amount" label="进货总价">
-      <el-input size="medium" autocomplete="off" v-model="formAdd.Amount"></el-input>
-    </el-form-item>
+      <el-form-item prop="Quantity" label="物料数量">
+        <el-input size="medium" autocomplete="off" v-model="formAdd.Quantity"></el-input>
+      </el-form-item>
+      <el-form-item prop="Amount" label="进货总价">
+        <el-input size="medium" autocomplete="off" v-model="formAdd.Amount"></el-input>
+      </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button type="primary" @click="postAdd()">确认添加</el-button>
@@ -93,7 +93,7 @@
     new Vue({
       el: '#app',
       data:{
-        purchase:{
+        bring:{
 
         },
         formEdit:{
@@ -105,7 +105,7 @@
         dialogFormAdd:false,
         currentPage: 1, // 当前页码
         total: 20, // 总条数
-        pageSize: 10 // 每页的数据条数
+        pageSize: 50 // 每页的数据条数
       },
       mounted () {
 
@@ -152,10 +152,10 @@
         abc(){
           var that = this;
           axios.post('manage/getallpurchase')
-              .then(function (response)
-              {
-                that.purchase = response.data.data;
-              })
+                  .then(function (response)
+                  {
+                    that.purchase = response.data.data;
+                  })
 
         },
 
@@ -176,24 +176,24 @@
             axios.post('user/deleteuser', Object.assign({}, PostBase, {
               pk: row.uid
             }))
-              .then(function (response) {
-                if (response.data.code == CODE_SUCCESS) {
-                  that.$message({
-                    message: response.data.msg,
-                    type: 'success'
-                  });
-                  setTimeout(function () {
-                    location.replace('');
-                  }, 1000)
-                } else {
-                  that.$message.error(response.data.msg);
-                }
-              })
+                    .then(function (response) {
+                      if (response.data.code == CODE_SUCCESS) {
+                        that.$message({
+                          message: response.data.msg,
+                          type: 'success'
+                        });
+                        setTimeout(function () {
+                          location.replace('');
+                        }, 1000)
+                      } else {
+                        that.$message.error(response.data.msg);
+                      }
+                    })
           })
-            .catch(function (error) {
-              that.$message.error('服务器内部错误');
-              console.log(error);
-            });
+                  .catch(function (error) {
+                    that.$message.error('服务器内部错误');
+                    console.log(error);
+                  });
         },
 
         postAdd(){

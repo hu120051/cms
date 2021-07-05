@@ -60,6 +60,11 @@ class Manage extends BaseController
 
     }
 
+    /**
+     * 添加入库记录
+     *
+     * @return \json
+     */
     public function addpurchase()
     {
         $params = json_decode(file_get_contents("php://input"), true);
@@ -77,6 +82,23 @@ class Manage extends BaseController
             return jok('添加成功！');
         }
         return jerr('添加失败！');
+    }
+
+    /**
+     * 获取评审表
+     *
+     * @return \json
+     */
+    public function getallappraisal(){
+        $data = Db::table('appraisal')
+            ->alias('a')
+            ->join(['product'=>'p'],'a.ProductID=p.ProductID')
+            ->join(['Client'=>'c'],'a.ClientID=c.ClientID')
+            ->order('a.AppraisalID','desc')
+            ->field('a.AppraisalID,a.ClientID,c.ClientName,a.ProductID,p.ProductName,a.Quantity,a.Left_Quantity,a.AppraisalTime')
+            ->select();
+        return jok('',$data);
+
     }
 
 }

@@ -13,7 +13,7 @@
         <el-button type="primary" icon="el-icon-edit" size="small" @click="clickAdd">添加</el-button>
       </el-form-item>
     </el-form>
-    <el-table :data="material" >
+    <el-table :data="material.slice((currentPage-1)*pageSize,currentPage*pageSize)" >
       <el-table-column prop="MaterialID" label="ID" width="150%">
       </el-table-column>
       <el-table-column prop="MaterialName" label="物料名称">
@@ -120,7 +120,7 @@
         dialogFormEdit:false,
         currentPage: 1, // 当前页码
         total: 20, // 总条数
-        pageSize: 50 // 每页的数据条数
+        pageSize: 10 // 每页的数据条数
       },
       mounted () {
         // this.baiduMap();

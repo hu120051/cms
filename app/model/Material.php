@@ -11,4 +11,15 @@ class Material extends Model
     {
         return $this->order('MaterialID','asc')->select();
     }
+
+    public function addmaterial($MaterialID, $MaterialName, $Unit, $Univalence){
+        $data = [
+            'MaterialID' => $MaterialID,
+            'MaterialName' => $MaterialName,
+            'Unit' => $Unit,
+            'Univalence' => $Univalence,
+        ];
+        $this->insert($data);
+        return true;
+    }
 }

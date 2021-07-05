@@ -18,4 +18,24 @@ class Manage extends BaseController
         return jok('',$data);
     }
 
+    /**
+     * 添加用户
+     *
+     * @return \json
+     */
+    public function addmaterial()
+    {
+        $params = json_decode(file_get_contents("php://input"), true);
+        $MaterialID = $params['MaterialID'];
+        $MaterialName = $params['MaterialName'];
+        $Unit = $params['Unit'];
+        $Univalence = $params['Univalence'];
+        $material = new \app\model\Material();
+        $result = $material->addmaterial($MaterialID, $MaterialName, $Unit, $Univalence);
+        if ($result) {
+            return jok('添加成功！');
+        }
+        return jerr('添加失败！');
+    }
+
 }

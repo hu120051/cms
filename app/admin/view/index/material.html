@@ -4,9 +4,6 @@
 <head>
   <title>物料管理·库存管理系统</title>
   <style>
-    .el-table .online-row {
-      background: #dfffe2;
-    }
 
   </style>
   {include file="common/header"/}
@@ -16,7 +13,7 @@
         <el-button type="primary" icon="el-icon-edit" size="small" @click="clickAdd">添加</el-button>
       </el-form-item>
     </el-form>
-    <el-table :data="material" :row-class-name="tableRowClassName">
+    <el-table :data="material" >
       <el-table-column prop="MaterialID" label="ID" width="150%">
       </el-table-column>
       <el-table-column prop="MaterialName" label="物料名称">
@@ -85,26 +82,21 @@
   </el-dialog>
 
   <!-- 添加框 -->
-  <el-dialog title="添加用户" :visible.sync="dialogFormAdd" :modal-append-to-body='false'>
+  <el-dialog title="添加物料" :visible.sync="dialogFormAdd" :modal-append-to-body='false'>
     <el-form :model="formAdd" ref="formAdd">
 
-      <el-form-item prop="name" label="姓名">
-        <el-input size="medium" autocomplete="off" v-model="formAdd.name"></el-input>
+      <el-form-item prop="MaterialID" label="物料编号">
+        <el-input size="medium" autocomplete="off" v-model="formAdd.MaterialID"></el-input>
       </el-form-item>
-      <el-form-item prop="username" label="用户名">
-        <el-input size="medium" autocomplete="off" v-model="formAdd.username"></el-input>
+      <el-form-item prop="MaterialName" label="物料名称">
+        <el-input size="medium" autocomplete="off" v-model="formAdd.MaterialName"></el-input>
       </el-form-item>
-      <el-form-item prop="uncodepassword" label="密码">
-        <el-input size="medium" autocomplete="off" v-model="formAdd.uncodepassword" show-password></el-input>
+      <el-form-item prop="Unit" label="物料单位">
+        <el-input size="medium" autocomplete="off" v-model="formAdd.Unit"></el-input>
       </el-form-item>
-      <el-form-item prop="group" label="用户组">
-        <el-radio-group v-model="formAdd.group">
-          <el-radio label="superadmin">超级管理员</el-radio>
-          <el-radio label="admin">管理员</el-radio>
-          <el-radio label="staff">员工</el-radio>
-        </el-radio-group>
+      <el-form-item prop="Univalence" label="物料单价">
+        <el-input size="medium" autocomplete="off" v-model="formAdd.Univalence"></el-input>
       </el-form-item>
-
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button type="primary" @click="postAdd()">确认添加</el-button>
@@ -191,7 +183,7 @@
         },
         postDelete(row){
           var that = this;
-          this.$confirm('确认删除用户？', '提示', {
+          this.$confirm('确认删除该物料？', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
@@ -239,7 +231,7 @@
         },
         postAdd(){
           var that = this;
-          axios.post('user/adduser', Object.assign({}, PostBase, that.formAdd))
+          axios.post('manage/addmaterial', Object.assign({}, PostBase, that.formAdd))
                   .then(function (response) {
                     if (response.data.code == CODE_SUCCESS) {
                       that.$message({
@@ -281,12 +273,7 @@
                     console.log(error);
                   });
         },
-        tableRowClassName({row}) {
-          if (row.status === 'online') {
-            return 'online-row';
-          }
-          return '';
-        }
+
       }
     })
   </script>

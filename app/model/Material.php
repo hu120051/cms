@@ -22,4 +22,13 @@ class Material extends Model
         $this->insert($data);
         return true;
     }
+
+    public function addmaterialstock($MaterialID, $change){
+        $oldstock = $this->where('MaterialID', $MaterialID)->value('Stock');
+        $newstock = $oldstock + $change;
+        $this->where('MaterialID', $MaterialID)->update([
+            'Stock' => $newstock
+        ]);
+        return true;
+    }
 }

@@ -3,8 +3,8 @@ namespace app\admin\controller;
 
 
 use app\admin\BaseController;
-use think\facade\Session;
-use think\facade\View;
+use app\model\StockIn;
+use think\facade\Db;
 
 
 //前端通过axios_post传一个json对象到后端，后端用input函数接收，并不是接收前端input标签中的信息！
@@ -12,6 +12,11 @@ use think\facade\View;
 
 class Manage extends BaseController
 {
+    /**
+     * 获取物料清单
+     *
+     * @return \json
+     */
     public function getallmaterial(){
         $material = new \app\model\Material();
         $data = $material->getallmaterial();
@@ -19,7 +24,7 @@ class Manage extends BaseController
     }
 
     /**
-     * 添加用户
+     * 添加物料
      *
      * @return \json
      */
@@ -33,6 +38,42 @@ class Manage extends BaseController
         $material = new \app\model\Material();
         $result = $material->addmaterial($MaterialID, $MaterialName, $Unit, $Univalence);
         if ($result) {
+            return jok('添加成功！');
+        }
+        return jerr('添加失败！');
+    }
+
+    /**
+     * 获取入库记录
+     *
+     * @return \json
+     */
+    public function getallpurchase(){
+        $data = Db::table('stock_in')
+            ->alias('p')
+            ->join(['supplier'=>'s'],'p.SupplierID=s.SupplierID')
+            ->join(['material'=>'m'],'p.MaterialID=m.MaterialID')
+            ->order('p.PurchaseID','desc')
+            ->field('p.PurchaseID,p.SupplierID,s.SupplierName,p.MaterialID,m.MaterialName,p.Date,p.Quantity,p.Amount')
+            ->select();
+        return jok('',$data);
+
+    }
+
+    public function addpurchase()
+    {
+        $params = json_decode(file_get_contents("php://input"), true);
+        $PurchaseID = $params['PurchaseID'];
+        $SupplierID = $params['SupplierID'];
+        $MaterialID = $params['MaterialID'];
+        $Date = $params['Date'];
+        $Quantity = $params['Quantity'];
+        $Amount = $params['Amount'];
+        $material = new \app\model\Material();
+        $purchase = new StockIn();
+        $result1 = $material->addmaterialstock($MaterialID, $Quantity);
+        $result2 = $purchase->addpurchase($PurchaseID, $SupplierID, $MaterialID, $Date, $Quantity, $Amount);
+        if ($result1&&$result2) {
             return jok('添加成功！');
         }
         return jerr('添加失败！');

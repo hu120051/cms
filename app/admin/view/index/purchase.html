@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>物料管理·库存管理系统</title>
+  <title>进货记录·库存管理系统</title>
   <style>
 
   </style>
@@ -13,20 +13,24 @@
         <el-button type="primary" icon="el-icon-edit" size="small" @click="clickAdd">添加</el-button>
       </el-form-item>
     </el-form>
-    <el-table :data="material" >
-      <el-table-column prop="MaterialID" label="ID" width="150%">
+    <el-table :data="purchase" >
+      <el-table-column prop="PurchaseID" label="ID" width="70%">
+      </el-table-column>
+      <el-table-column prop="SupplierID" label="供应商编号">
+      </el-table-column>
+      <el-table-column prop="SupplierName" label="供应商名称">
+      </el-table-column>
+      <el-table-column prop="MaterialID" label="物料编号" >
       </el-table-column>
       <el-table-column prop="MaterialName" label="物料名称">
       </el-table-column>
-      <el-table-column prop="Stock" label="货材仓库存量">
+      <el-table-column prop="Date" label="入库日期">
       </el-table-column>
-      <el-table-column prop="Using" label="在制仓库存量" >
+      <el-table-column prop="Quantity" label="数量">
       </el-table-column>
-      <el-table-column prop="Unit" label="单位" width="50%">
+      <el-table-column prop="Amount" label="花销">
       </el-table-column>
-      <el-table-column prop="Univalence" label="单价">
-      </el-table-column>
-      <el-table-column label="操作" width="180">
+      <el-table-column label="操作" width="70%">
         <template slot-scope="scope">
           <el-link type="info" @click="clickEdit(scope.row)" :underline="false"><i class="el-icon-edit"></i>编辑
           </el-link>
@@ -39,17 +43,17 @@
     </el-table>
     <!-- 分页器 -->
     <div class="block" style="margin-top:15px;">
-<!--      <el-pagination-->
-<!--              background-->
-<!--              layout="total, sizes, prev, pager, next, jumper"-->
-<!--              :total="Object.keys(material).length">-->
-<!--      </el-pagination>-->
+      <!--      <el-pagination-->
+      <!--              background-->
+      <!--              layout="total, sizes, prev, pager, next, jumper"-->
+      <!--              :total="Object.keys(material).length">-->
+      <!--      </el-pagination>-->
       <el-pagination align='center' @size-change="handleSizeChange" @current-change="handleCurrentChange"
                      :current-page="currentPage"
                      :page-sizes="[10,20,50,100]"
                      :page-size="pageSize"
                      layout="total, sizes, prev, pager, next, jumper"
-                     :total="Object.keys(material).length">
+                     :total="Object.keys(purchase).length">
       </el-pagination>
     </div>
 
@@ -82,21 +86,32 @@
   </el-dialog>
 
   <!-- 添加框 -->
-  <el-dialog title="添加物料" :visible.sync="dialogFormAdd" :modal-append-to-body='false'>
-    <el-form :model="formAdd" ref="formAdd">
+  <el-dialog title="物料入库" :visible.sync="dialogFormAdd" :modal-append-to-body='false'>
+    <el-form :model="formAdd" label-width="100px">
 
+      <el-form-item prop="PurchaseID" label="进货编号">
+        <el-input size="medium" autocomplete="off" v-model="formAdd.PurchaseID"></el-input>
+      </el-form-item>
+      <el-form-item prop="SupplierID" label="供应商编号">
+        <el-input size="medium" autocomplete="off" v-model="formAdd.SupplierID"></el-input>
+      </el-form-item>
       <el-form-item prop="MaterialID" label="物料编号">
         <el-input size="medium" autocomplete="off" v-model="formAdd.MaterialID"></el-input>
       </el-form-item>
-      <el-form-item prop="MaterialName" label="物料名称">
-        <el-input size="medium" autocomplete="off" v-model="formAdd.MaterialName"></el-input>
+      <el-form-item prop="Date" label="进货日期">
+        <el-date-picker
+                v-model="formAdd.Date"
+                value-format="yyyy-MM-dd"
+                type="date"
+                placeholder="选择日期">
+        </el-date-picker>
       </el-form-item>
-      <el-form-item prop="Unit" label="物料单位">
-        <el-input size="medium" autocomplete="off" v-model="formAdd.Unit"></el-input>
-      </el-form-item>
-      <el-form-item prop="Univalence" label="物料单价">
-        <el-input size="medium" autocomplete="off" v-model="formAdd.Univalence"></el-input>
-      </el-form-item>
+    <el-form-item prop="Quantity" label="物料数量">
+      <el-input size="medium" autocomplete="off" v-model="formAdd.Quantity"></el-input>
+    </el-form-item>
+    <el-form-item prop="Amount" label="进货总价">
+      <el-input size="medium" autocomplete="off" v-model="formAdd.Amount"></el-input>
+    </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button type="primary" @click="postAdd()">确认添加</el-button>
@@ -107,7 +122,7 @@
     new Vue({
       el: '#app',
       data:{
-        material:{
+        purchase:{
 
         },
         formEdit:{
@@ -123,8 +138,7 @@
         pageSize: 50 // 每页的数据条数
       },
       mounted () {
-        // this.baiduMap();
-        // this.username = getCookie('username');
+
         this.abc();
       },
 
@@ -167,10 +181,10 @@
 
         abc(){
           var that = this;
-          axios.post('manage/getallmaterial')
+          axios.post('manage/getallpurchase')
               .then(function (response)
               {
-                that.material = response.data.data;
+                that.purchase = response.data.data;
               })
 
         },
@@ -190,24 +204,24 @@
             axios.post('user/deleteuser', Object.assign({}, PostBase, {
               pk: row.uid
             }))
-                    .then(function (response) {
-                      if (response.data.code == CODE_SUCCESS) {
-                        that.$message({
-                          message: response.data.msg,
-                          type: 'success'
-                        });
-                        setTimeout(function () {
-                          location.replace('');
-                        }, 1000)
-                      } else {
-                        that.$message.error(response.data.msg);
-                      }
-                    })
-          })
-                  .catch(function (error) {
-                    that.$message.error('服务器内部错误');
-                    console.log(error);
+              .then(function (response) {
+                if (response.data.code == CODE_SUCCESS) {
+                  that.$message({
+                    message: response.data.msg,
+                    type: 'success'
                   });
+                  setTimeout(function () {
+                    location.replace('');
+                  }, 1000)
+                } else {
+                  that.$message.error(response.data.msg);
+                }
+              })
+          })
+            .catch(function (error) {
+              that.$message.error('服务器内部错误');
+              console.log(error);
+            });
         },
         clickEdit(row){
           var that = this;
@@ -230,7 +244,7 @@
         },
         postAdd(){
           var that = this;
-          axios.post('manage/addmaterial', Object.assign({}, PostBase, that.formAdd))
+          axios.post('manage/addpurchase', Object.assign({}, PostBase, that.formAdd))
                   .then(function (response) {
                     if (response.data.code == CODE_SUCCESS) {
                       that.$message({

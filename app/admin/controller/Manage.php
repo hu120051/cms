@@ -3,6 +3,7 @@ namespace app\admin\controller;
 
 
 use app\admin\BaseController;
+use app\model\Appraisal;
 use app\model\StockIn;
 use think\facade\Db;
 
@@ -95,10 +96,30 @@ class Manage extends BaseController
             ->join(['product'=>'p'],'a.ProductID=p.ProductID')
             ->join(['Client'=>'c'],'a.ClientID=c.ClientID')
             ->order('a.AppraisalID','desc')
-            ->field('a.AppraisalID,a.ClientID,c.ClientName,a.ProductID,p.ProductName,a.Quantity,a.Left_Quantity,a.AppraisalTime')
+            ->field('a.AppraisalID,a.ClientID,c.ClientName,a.ProductID,p.ProductName,a.Quantity,a.Left_Quantity,a.Date')
             ->select();
         return jok('',$data);
 
+    }
+
+    /**
+     * 添加评审表
+     *
+     * @return \json
+     */
+    public function addappraisal(){
+        $params = json_decode(file_get_contents("php://input"), true);
+        $AppraisalID = $params['AppraisalID'];
+        $ProductID = $params['ProductID'];
+        $ClientID = $params['ClientID'];
+        $Date = $params['Date'];
+        $Quantity = $params['Quantity'];
+        $appraisal = new Appraisal();
+        $result = $appraisal->addappraisal($AppraisalID,$ProductID,$ClientID,$Date,$Quantity);
+        if ($result) {
+            return jok('添加成功！');
+        }
+        return jerr('添加失败！');
     }
 
 }

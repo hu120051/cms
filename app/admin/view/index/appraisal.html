@@ -13,7 +13,7 @@
         <el-button type="primary" icon="el-icon-edit" size="small" @click="clickAdd">添加</el-button>
       </el-form-item>
     </el-form>
-    <el-table :data="purchase.slice((currentPage-1)*pageSize,currentPage*pageSize)">
+    <el-table :data="appraisal.slice((currentPage-1)*pageSize,currentPage*pageSize)">
       <el-table-column prop="AppraisalID" label="评审号">
       </el-table-column>
       <el-table-column prop="ClientID" label="客户编号" >
@@ -28,7 +28,7 @@
       </el-table-column>
       <el-table-column prop="Left_Quantity" label="剩余需求数量">
       </el-table-column>
-      <el-table-column prop="AppraisalTime" label="生成时间">
+      <el-table-column prop="Date" label="生成时间">
       </el-table-column>
       <el-table-column label="操作" width="70%">
         <template slot-scope="scope">
@@ -40,48 +40,40 @@
     </el-table>
     <!-- 分页器 -->
     <div class="block" style="margin-top:15px;">
-      <!--      <el-pagination-->
-      <!--              background-->
-      <!--              layout="total, sizes, prev, pager, next, jumper"-->
-      <!--              :total="Object.keys(material).length">-->
-      <!--      </el-pagination>-->
       <el-pagination align='center' @size-change="handleSizeChange" @current-change="handleCurrentChange"
                      :current-page="currentPage"
                      :page-sizes="[10,20,50,100]"
                      :page-size="pageSize"
                      layout="total, sizes, prev, pager, next, jumper"
-                     :total="Object.keys(purchase).length">
+                     :total="Object.keys(appraisal).length">
       </el-pagination>
     </div>
 
   </el-main>
 
   <!-- 添加框 -->
-  <el-dialog title="物料入库" :visible.sync="dialogFormAdd" :modal-append-to-body='false'>
+  <el-dialog title="添加评审单" :visible.sync="dialogFormAdd" :modal-append-to-body='false'>
     <el-form :model="formAdd" label-width="100px">
 
-      <el-form-item prop="PurchaseID" label="进货编号">
-        <el-input size="medium" autocomplete="off" v-model="formAdd.PurchaseID"></el-input>
+      <el-form-item prop="AppraisalID" label="评审单号">
+        <el-input size="medium" autocomplete="off" v-model="formAdd.AppraisalID"></el-input>
       </el-form-item>
-      <el-form-item prop="SupplierID" label="供应商编号">
-        <el-input size="medium" autocomplete="off" v-model="formAdd.SupplierID"></el-input>
+      <el-form-item prop="ClientID" label="客户编号">
+        <el-input size="medium" autocomplete="off" v-model="formAdd.ClientID"></el-input>
       </el-form-item>
-      <el-form-item prop="MaterialID" label="物料编号">
-        <el-input size="medium" autocomplete="off" v-model="formAdd.MaterialID"></el-input>
+      <el-form-item prop="ProductID" label="产品编号">
+        <el-input size="medium" autocomplete="off" v-model="formAdd.ProductID"></el-input>
       </el-form-item>
-      <el-form-item prop="Date" label="进货日期">
+      <el-form-item prop="Quantity" label="需求数量">
+        <el-input size="medium" autocomplete="off" v-model="formAdd.Quantity"></el-input>
+      </el-form-item>
+      <el-form-item prop="Date" label="评审日期">
         <el-date-picker
                 v-model="formAdd.Date"
                 value-format="yyyy-MM-dd"
                 type="date"
                 placeholder="选择日期">
         </el-date-picker>
-      </el-form-item>
-      <el-form-item prop="Quantity" label="物料数量">
-        <el-input size="medium" autocomplete="off" v-model="formAdd.Quantity"></el-input>
-      </el-form-item>
-      <el-form-item prop="Amount" label="进货总价">
-        <el-input size="medium" autocomplete="off" v-model="formAdd.Amount"></el-input>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
@@ -93,7 +85,7 @@
     new Vue({
       el: '#app',
       data:{
-        purchase:{
+        appraisal:{
 
         },
         formEdit:{
@@ -152,10 +144,10 @@
         abc(){
           var that = this;
           axios.post('manage/getallappraisal')
-                  .then(function (response)
-                  {
-                    that.purchase = response.data.data;
-                  })
+            .then(function (response)
+            {
+              that.appraisal = response.data.data;
+            })
 
         },
 
@@ -198,7 +190,7 @@
 
         postAdd(){
           var that = this;
-          axios.post('manage/addpurchase', Object.assign({}, PostBase, that.formAdd))
+          axios.post('manage/addappraisal', Object.assign({}, PostBase, that.formAdd))
                   .then(function (response) {
                     if (response.data.code == CODE_SUCCESS) {
                       that.$message({

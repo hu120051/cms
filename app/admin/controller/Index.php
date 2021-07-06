@@ -127,4 +127,14 @@ class Index extends BaseController
         }
         return View::fetch('emergency');
     }
+    public function add()
+    {
+        $error = $this->access();
+        if($error)
+        {
+            return View::fetch('login');
+        }
+        return View::fetch('add');
+    }
+
 }

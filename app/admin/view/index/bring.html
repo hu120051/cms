@@ -8,13 +8,19 @@
   </style>
   {include file="common/header"/}
   <el-main>
-    <el-form :inline="true">
+    <el-form :inline="true" :model="formInline" class="demo-form-inline">
+      <el-form-item label="领料单编号">
+        <el-input v-model="formInline.StockOutID" placeholder="领料单编号"></el-input>
+      </el-form-item>
+      <el-form-item label="评审表编号">
+        <el-input v-model="formInline.AppraisalID" placeholder="评审表编号"></el-input>
+      </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="el-icon-edit" size="small" @click="clickAdd">添加</el-button>
+        <el-button type="primary" @click="onSubmit">下一步</el-button>
       </el-form-item>
     </el-form>
     <el-table :data="bring.slice((currentPage-1)*pageSize,currentPage*pageSize)" >
-      <el-table-column prop="StockOutID" label="出库编号">
+      <el-table-column prop="StockOutID" label="领料单编号">
       </el-table-column>
       <el-table-column prop="AppraisalID" label="评审表编号">
       </el-table-column>
@@ -96,6 +102,9 @@
         formAdd:{
 
         },
+        formInline:{
+
+        },
         dialogFormAdd:false,
         currentPage: 1, // 当前页码
         total: 20, // 总条数
@@ -110,25 +119,24 @@
         logOut() {
           var that = this;
           axios.post('user/logout')
-                  .then(function (response)
-                  {
-                    if (response.data.code == 200) {
-                      that.$message({
-                        message: '退出成功,正在跳转中',
-                        type: 'success'
-                      });
-                      setTimeout(function () {
-                        location.replace('');
-                      }, 1000)
-                    } else {
-                      that.$message.error(response.data.msg);
-                    }
-                  })
-                  .catch(function (error)
-                  {
-                    that.$message.error('tuichu失败，服务器内部错误');
-                  })
-          ;
+            .then(function (response)
+            {
+              if (response.data.code == 200) {
+                that.$message({
+                  message: '退出成功,正在跳转中',
+                  type: 'success'
+                });
+                setTimeout(function () {
+                  location.replace('');
+                }, 1000)
+              } else {
+                that.$message.error(response.data.msg);
+              }
+            })
+            .catch(function (error)
+            {
+              that.$message.error('tuichu失败，服务器内部错误');
+            })
 
         },
         //每页条数改变时触发 选择一页显示多少行
@@ -146,10 +154,10 @@
         abc(){
           var that = this;
           axios.post('manage/getallstockout')
-                  .then(function (response)
-                  {
-                    that.bring = response.data.data;
-                  })
+            .then(function (response)
+            {
+              that.bring = response.data.data;
+            })
 
         },
 
@@ -157,6 +165,24 @@
           var that = this;
           that.formAdd = {};
           that.dialogFormAdd = true;
+        },
+
+        onSubmit(){
+          var that = this;
+          axios.post('manage/setcookie', Object.assign({}, PostBase, that.formInline))
+            .then(function (response) {
+              if (response.data.code == CODE_SUCCESS) {
+                that.$message({
+                  message: response.data.msg,
+                  type: 'success'
+                });
+                setTimeout(function () {
+                  location.replace('/admin/add');
+                }, 1000)
+              } else {
+                that.$message.error(response.data.msg);
+              }
+            })
         },
 
         //todo: 删除同时扣除加入进Stock字段的值
@@ -170,47 +196,47 @@
             axios.post('user/deleteuser', Object.assign({}, PostBase, {
               pk: row.uid
             }))
-                    .then(function (response) {
-                      if (response.data.code == CODE_SUCCESS) {
-                        that.$message({
-                          message: response.data.msg,
-                          type: 'success'
-                        });
-                        setTimeout(function () {
-                          location.replace('');
-                        }, 1000)
-                      } else {
-                        that.$message.error(response.data.msg);
-                      }
-                    })
-          })
-                  .catch(function (error) {
-                    that.$message.error('服务器内部错误');
-                    console.log(error);
+              .then(function (response) {
+                if (response.data.code == CODE_SUCCESS) {
+                  that.$message({
+                    message: response.data.msg,
+                    type: 'success'
                   });
+                  setTimeout(function () {
+                    location.replace('');
+                  }, 1000)
+                } else {
+                  that.$message.error(response.data.msg);
+                }
+              })
+          })
+            .catch(function (error) {
+              that.$message.error('服务器内部错误');
+              console.log(error);
+            });
         },
 
         postAdd(){
           var that = this;
           axios.post('manage/addpurchase', Object.assign({}, PostBase, that.formAdd))
-                  .then(function (response) {
-                    if (response.data.code == CODE_SUCCESS) {
-                      that.$message({
-                        message: response.data.msg,
-                        type: 'success'
-                      });
-                      that.dialogFormAdd = false;
-                      setTimeout(function () {
-                        location.replace('');
-                      }, 1000)
-                    } else {
-                      that.$message.error(response.data.msg);
-                    }
-                  })
-                  .catch(function (error) {
-                    that.$message.error('服务器内部错误');
-                    console.log(error);
-                  });
+            .then(function (response) {
+              if (response.data.code == CODE_SUCCESS) {
+                that.$message({
+                  message: response.data.msg,
+                  type: 'success'
+                });
+                that.dialogFormAdd = false;
+                setTimeout(function () {
+                  location.replace('');
+                }, 1000)
+              } else {
+                that.$message.error(response.data.msg);
+              }
+            })
+            .catch(function (error) {
+              that.$message.error('服务器内部错误');
+              console.log(error);
+            });
         },
 
       }

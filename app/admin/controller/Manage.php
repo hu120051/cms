@@ -6,7 +6,8 @@ use app\admin\BaseController;
 use app\model\Appraisal;
 use app\model\StockIn;
 use think\facade\Db;
-
+use think\facade\View;
+use think\response\Json;
 
 //前端通过axios_post传一个json对象到后端，后端用input函数接收，并不是接收前端input标签中的信息！
 
@@ -139,4 +140,63 @@ class Manage extends BaseController
         return jok('',$data);
     }
 
+    /**
+     * 确定物料数量
+     *
+     * @return \json
+     */
+
+//        $data = Db::table('appraisal')
+//            ->where([
+//                'AppraisalID' => $AppraisalID
+//            ])
+//            ->field('ProductID,Left_Quantity')
+//            ->select()->toArray();
+//        $data = $data[0];
+//        $ProductID = $data['ProductID'];
+//        $LeftQuantity = $data['Left_Quantity'];
+//        $temp = Db::table('ingredient')
+//            ->where([
+//                'ProductID' => $ProductID
+//            ])
+//            ->field('MaterialID,BOM')
+//            ->select()->toArray();
+//        foreach ($temp as $key => $value){
+//            $temp[$key]['BOM'] = $value['BOM']*$LeftQuantity;
+//        }
+    public function setcookie()
+    {
+        $params = json_decode(file_get_contents("php://input"), true);
+        $StockOutID = $params['StockOutID'];
+        $AppraisalID = $params['AppraisalID'];
+        setCookie('StockOutID',$StockOutID, time() + 3600, '/');
+        setCookie('AppraisalID',$AppraisalID, time() + 3600, '/');
+        return jok();
+    }
+
+    public function confirmmaterial(){
+        $StockOutID = cookie('StockOutID');
+        $AppraisalID = cookie('AppraisalID');
+        $data = Db::table('appraisal')
+            ->where([
+                'AppraisalID' => $AppraisalID
+            ])
+            ->field('ProductID,Left_Quantity')
+            ->select()->toArray();
+        $data = $data[0];
+        $ProductID = $data['ProductID'];
+        $LeftQuantity = $data['Left_Quantity'];
+        setCookie('LeftQuantity',$LeftQuantity, time() + 3600, '/');
+        $temp = Db::table('ingredient')
+            ->where([
+                'ProductID' => $ProductID
+            ])
+            ->field('MaterialID,BOM')
+            ->select()->toArray();
+        foreach ($temp as $key => $value){
+            $temp[$key]['BOM'] = $value['BOM']*$LeftQuantity;
+        }
+        return jok("", $temp);
+
+    }
 }

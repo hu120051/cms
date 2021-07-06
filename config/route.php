@@ -8,7 +8,7 @@ Route::rule('purchase','admin/index/purchase');
 Route::rule('material','admin/index/material');
 Route::rule('bring','admin/index/bring');
 Route::rule('appraisal','admin/index/appraisal');
-Route::rule('approval','admin/index/approval');
+Route::rule('add','admin/index/add');
 Route::rule('emergency','admin/index/emergency');
 
 Route::rule('work','staff/index/work');

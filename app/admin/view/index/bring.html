@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>物料出库·库存管理系统</title>
+  <title>出库记录·库存管理系统</title>
   <style>
 
   </style>
@@ -14,27 +14,21 @@
       </el-form-item>
     </el-form>
     <el-table :data="bring.slice((currentPage-1)*pageSize,currentPage*pageSize)" >
-      <el-table-column prop="PurchaseID" label="ID" width="70%">
+      <el-table-column prop="StockOutID" label="出库编号">
       </el-table-column>
-      <el-table-column prop="SupplierID" label="供应商编号">
+      <el-table-column prop="AppraisalID" label="评审表编号">
       </el-table-column>
-      <el-table-column prop="SupplierName" label="供应商名称">
+      <el-table-column prop="ProductID" label="产品编号">
       </el-table-column>
-      <el-table-column prop="MaterialID" label="物料编号" >
+      <el-table-column prop="Quantity" label="产品需求数量" >
+      </el-table-column>
+      <el-table-column prop="MaterialID" label="物料编号">
       </el-table-column>
       <el-table-column prop="MaterialName" label="物料名称">
       </el-table-column>
-      <el-table-column prop="Date" label="入库日期">
+      <el-table-column prop="Qty" label="出库数量">
       </el-table-column>
-      <el-table-column prop="Quantity" label="数量">
-      </el-table-column>
-      <el-table-column prop="Amount" label="花销">
-      </el-table-column>
-      <el-table-column label="操作" width="70%">
-        <template slot-scope="scope">
-          <el-link type="danger" @click="postDelete(scope.row)" :underline="false"><i
-                  class="el-icon-delete"></i>删除</el-link>
-        </template>
+      <el-table-column prop="Datetime" label="出库时间" width="160%">
       </el-table-column>
 
     </el-table>
@@ -50,21 +44,21 @@
                      :page-sizes="[10,20,50,100]"
                      :page-size="pageSize"
                      layout="total, sizes, prev, pager, next, jumper"
-                     :total="Object.keys(purchase).length">
+                     :total="Object.keys(bring).length">
       </el-pagination>
     </div>
 
   </el-main>
 
   <!-- 添加框 -->
-  <el-dialog title="物料入库" :visible.sync="dialogFormAdd" :modal-append-to-body='false'>
+  <el-dialog title="物料出库" :visible.sync="dialogFormAdd" :modal-append-to-body='false'>
     <el-form :model="formAdd" label-width="100px">
 
-      <el-form-item prop="PurchaseID" label="进货编号">
-        <el-input size="medium" autocomplete="off" v-model="formAdd.PurchaseID"></el-input>
+      <el-form-item prop="StockOutID" label="出库编号">
+        <el-input size="medium" autocomplete="off" v-model="formAdd.StockOutID"></el-input>
       </el-form-item>
-      <el-form-item prop="SupplierID" label="供应商编号">
-        <el-input size="medium" autocomplete="off" v-model="formAdd.SupplierID"></el-input>
+      <el-form-item prop="AppraisalID" label="评审编号">
+        <el-input size="medium" autocomplete="off" v-model="formAdd.AppraisalID"></el-input>
       </el-form-item>
       <el-form-item prop="MaterialID" label="物料编号">
         <el-input size="medium" autocomplete="off" v-model="formAdd.MaterialID"></el-input>
@@ -151,10 +145,10 @@
 
         abc(){
           var that = this;
-          axios.post('manage/getallpurchase')
+          axios.post('manage/getallstockout')
                   .then(function (response)
                   {
-                    that.purchase = response.data.data;
+                    that.bring = response.data.data;
                   })
 
         },

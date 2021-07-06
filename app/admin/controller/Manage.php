@@ -122,4 +122,21 @@ class Manage extends BaseController
         return jerr('添加失败！');
     }
 
+    /**
+     * 获取出库记录
+     *
+     * @return \json
+     */
+    public function getallstockout(){
+        $data = Db::table('stock_out')
+            ->alias('so')
+            ->join(['appraisal'=>'a'],'so.AppraisalID=a.AppraisalID')
+            ->join(['stock_out_quantity'=>'q'],'so.StockOutID=q.StockOutID')
+            ->join(['material'=>'m'],'q.MaterialID=m.materialID')
+            ->order('so.StockOutID','desc')
+            ->field('so.StockOutID,so.AppraisalID,a.ProductID,a.Quantity,q.MaterialID,q.Qty,m.MaterialName,so.Datetime')
+            ->select();
+        return jok('',$data);
+    }
+
 }

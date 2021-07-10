@@ -273,6 +273,11 @@ class Manage extends BaseController
         return jerr('未知错误，添加失败');
     }
 
+    /**
+     * 获取指定产品配料表
+     *
+     * @return \json
+     */
     public function getproductingredient(){
         $params = json_decode(file_get_contents("php://input"), true);
         $ProductID = $params['ProductID'];
@@ -295,6 +300,11 @@ class Manage extends BaseController
 
     }
 
+    /**
+     * 修改配料表
+     *
+     * @return \json
+     */
     public function changeingredient(){
         $params = json_decode(file_get_contents("php://input"), true);
         $ProductID = $params['ProductID'];
@@ -307,6 +317,26 @@ class Manage extends BaseController
         }
         else{
             return jerr('未知错误，修改失败');
+        }
+    }
+
+    /**
+     * 添加新配料
+     *
+     * @return \json
+     */
+    public function addingredient(){
+        $params = json_decode(file_get_contents("php://input"), true);
+        $MaterialID = $params['MaterialID'];
+        $BOM = $params['BOM'];
+        $ProductID = cookie('ProductID');
+        $ingredient = new Ingredient();
+        $result = $ingredient->addingredient($ProductID,$MaterialID,$BOM);
+        if($result){
+            return jok();
+        }
+        else{
+            return jerr();
         }
     }
 }

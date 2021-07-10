@@ -1,6 +1,7 @@
 <?php
 namespace app\model;
 
+use think\Db;
 use think\Model;
 
 class Ingredient extends Model
@@ -27,6 +28,16 @@ class Ingredient extends Model
                 'BOM' => $BOM
             ]);
         }
+        return true;
+    }
+
+    public function addingredient($ProductID,$MaterialID,$BOM){
+        $data = [
+            'ProductID' => $ProductID,
+            'MaterialID' => $MaterialID,
+            'BOM' => $BOM
+        ];
+        $this->insert($data);
         return true;
     }
 }

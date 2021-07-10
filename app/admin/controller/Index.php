@@ -84,48 +84,48 @@ class Index extends BaseController
     }
 
     /**
-     * 申请审批
+     * 产品管理
      *
      * @return string
      */
-    public function approval()
+    public function product()
     {
         $error = $this->access();
         if($error)
         {
             return View::fetch('login');
         }
-        return View::fetch('approval');
+        return View::fetch('product');
     }
 
     /**
-     * 车辆监控
+     * 产品入库
      *
      * @return string
      */
-    public function purchase()
+    public function productin()
     {
         $error = $this->access();
         if($error)
         {
             return View::fetch('login');
         }
-        return View::fetch('purchase');
+        return View::fetch('productin');
     }
 
     /**
-     * 事故处理
+     * 产品配料表
      *
      * @return string
      */
-    public function emergency()
+    public function ingredient()
     {
         $error = $this->access();
         if($error)
         {
             return View::fetch('login');
         }
-        return View::fetch('emergency');
+        return View::fetch('ingredient');
     }
     public function add()
     {

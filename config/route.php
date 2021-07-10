@@ -9,10 +9,10 @@ Route::rule('material','admin/index/material');
 Route::rule('bring','admin/index/bring');
 Route::rule('appraisal','admin/index/appraisal');
 Route::rule('add','admin/index/add');
-Route::rule('emergency','admin/index/emergency');
+Route::rule('product','admin/index/product');
+Route::rule('productin','admin/index/productin');
+Route::rule('ingredient','admin/index/ingredient');
 
-Route::rule('work','staff/index/work');
-Route::rule('apply','staff/index/apply');
 Route::rule('myinfo','staff/index/myinfo');
 Route::rule('addapplication','staff/index/addapplication');
 return [

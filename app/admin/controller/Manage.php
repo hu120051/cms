@@ -4,6 +4,7 @@ namespace app\admin\controller;
 
 use app\admin\BaseController;
 use app\model\Appraisal;
+use app\model\Product;
 use app\model\StockIn;
 use app\model\StockOut;
 use app\model\StockOutQuantity;
@@ -240,5 +241,34 @@ class Manage extends BaseController
         setCookie('Date',null, time() + 3600, '/');
         setCookie('LeftQuantity',null, time() + 3600, '/');
         return jok();
+    }
+
+    /**
+     * 获取产品清单
+     *
+     * @return \json
+     */
+    public function getallproduct(){
+        $product = new Product();
+        $data = $product->getallproduct();
+        return jok('',$data);
+    }
+
+    /**
+     * 添加产品
+     *
+     * @return \json
+     */
+    public function addproduct(){
+        $params = json_decode(file_get_contents("php://input"), true);
+        $ProductID = $params['ProductID'];
+        $ProductName = $params['ProductName'];
+        $Unit = $params['Unit'];
+        $product = new Product();
+        $result = $product->addproduct($ProductID, $ProductName, $Unit);
+        if($result){
+            return jok('添加成功');
+        }
+        return jerr('未知错误，添加失败');
     }
 }

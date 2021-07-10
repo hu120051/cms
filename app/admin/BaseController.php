@@ -24,11 +24,6 @@ abstract class BaseController
     protected $controller;
     protected $action;
 
-    //模型
-    protected $User;
-    protected $Location;
-    protected $Car;
-    protected $CarUse;
 
     //主键key
     protected $pk = '';

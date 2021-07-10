@@ -339,4 +339,17 @@ class Manage extends BaseController
             return jerr();
         }
     }
+
+    public function getallproductin(){
+
+        $data = Db::table('product_in')
+            ->alias('pi')
+            ->join(['product'=>'p'],'pi.ProductID=p.ProductID')
+            ->order('p.ProductID','asc')
+            ->field('pi.ProductInID,pi.ProductID,p.ProductName,pi.Quantity,pi.AppraisalID,pi.Date,p.Unit')
+            ->select();
+
+        return jok('success',$data);
+
+    }
 }

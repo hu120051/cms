@@ -29,11 +29,6 @@
         </el-table>
         <!-- 分页器 -->
         <div class="block" style="margin-top:15px;">
-            <!--      <el-pagination-->
-            <!--              background-->
-            <!--              layout="total, sizes, prev, pager, next, jumper"-->
-            <!--              :total="Object.keys(material).length">-->
-            <!--      </el-pagination>-->
             <el-pagination align='center' @size-change="handleSizeChange" @current-change="handleCurrentChange"
                            :current-page="currentPage"
                            :page-sizes="[10,20,50,100]"
@@ -44,32 +39,6 @@
         </div>
 
     </el-main>
-    <!-- 修改框 -->
-    <el-dialog title="修改用户信息" :visible.sync="dialogFormEdit" :modal-append-to-body='false'>
-        <el-form :model="formEdit" ref="formEdit">
-
-            <el-form-item prop="uid" label="uid(不可更改)" >
-                <el-input size="medium" autocomplete="off" v-model="formEdit.uid" readonly="true"></el-input>
-            </el-form-item>
-            <el-form-item prop="username" label="用户名(不可更改)">
-                <el-input size="medium" autocomplete="off" v-model="formEdit.username" readonly="true"></el-input>
-            </el-form-item>
-            <el-form-item prop="name" label="姓名" :label-width="50">
-                <el-input size="medium" autocomplete="off" v-model="formEdit.name"></el-input>
-            </el-form-item>
-            <el-form-item prop="group" label="用户组" :label-width="50">
-                <el-radio-group v-model="formEdit.group">
-                    <el-radio label="superadmin">超级管理员</el-radio>
-                    <el-radio label="admin">管理员</el-radio>
-                    <el-radio label="staff">员工</el-radio>
-                </el-radio-group>
-            </el-form-item>
-
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-            <el-button type="primary" @click="postEdit()">确认修改</el-button>
-        </div>
-    </el-dialog>
 
     <!-- 添加框 -->
     <el-dialog title="添加产品" :visible.sync="dialogFormAdd" :modal-append-to-body='false'>
@@ -95,9 +64,6 @@
             el: '#app',
             data:{
                 productin:{
-
-                },
-                formEdit:{
 
                 },
                 formAdd:{
@@ -165,54 +131,7 @@
                     that.formAdd = {};
                     that.dialogFormAdd = true;
                 },
-                postDelete(row){
-                    var that = this;
-                    this.$confirm('确认删除该物料？', '提示', {
-                        confirmButtonText: '确定',
-                        cancelButtonText: '取消',
-                        type: 'warning'
-                    }).then(()=>{
-                        axios.post('user/deleteuser', Object.assign({}, PostBase, {
-                            pk: row.uid
-                        }))
-                            .then(function (response) {
-                                if (response.data.code == CODE_SUCCESS) {
-                                    that.$message({
-                                        message: response.data.msg,
-                                        type: 'success'
-                                    });
-                                    setTimeout(function () {
-                                        location.replace('');
-                                    }, 1000)
-                                } else {
-                                    that.$message.error(response.data.msg);
-                                }
-                            })
-                    })
-                        .catch(function (error) {
-                            that.$message.error('服务器内部错误');
-                            console.log(error);
-                        });
-                },
-                clickEdit(row){
-                    var that = this;
-                    that.formEdit = row;
-                    axios.post('user/getdata', Object.assign({}, PostBase, {
-                        pk: row.uid
-                    }))
-                        .then(function (response) {
-                            if (response.data.code == CODE_SUCCESS) {
-                                that.formEdit = response.data.data;
-                                that.dialogFormEdit = true;
-                            } else {
-                                that.$message.error(response.data.msg);
-                            }
-                        })
-                        .catch(function (error) {
-                            that.$message.error('服务器内部错误');
-                            console.log(error);
-                        });
-                },
+
                 postAdd(){
                     var that = this;
                     axios.post('manage/addproduct', Object.assign({}, PostBase, that.formAdd))

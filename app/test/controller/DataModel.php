@@ -34,10 +34,12 @@ class DataModel
         $ProductID = $data['ProductID'];
         $LeftQuantity = $data['Left_Quantity'];
         $temp = Db::table('ingredient')
+            ->alias('i')
+            ->join(['material'=>'m'],'i.MaterialID=m.MaterialID')
             ->where([
-                'ProductID' => $ProductID
+                'i.ProductID' => $ProductID
             ])
-            ->field('MaterialID,BOM')
+            ->field('i.MaterialID,i.BOM,m.MaterialName')
             ->select()->toArray();
 //        dump($temp[0]['BOM']*2);
 

@@ -31,4 +31,15 @@ class Material extends Model
         ]);
         return true;
     }
+
+    public function  use($MaterialID,$change){
+        $oldstock = $this->where('MaterialID', $MaterialID)->value('Stock');
+        $oldusing = $this->where('MaterialID', $MaterialID)->value('Using');
+        $newstock = $oldstock - $change;
+        $newusing = $oldusing + $change;
+        $this->where('MaterialID', $MaterialID)->update([
+            'Stock' => $newstock,
+            'Using' => $newusing
+        ]);
+    }
 }

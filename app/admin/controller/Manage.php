@@ -5,8 +5,11 @@ namespace app\admin\controller;
 use app\admin\BaseController;
 use app\model\Appraisal;
 use app\model\StockIn;
+use app\model\StockOut;
+use app\model\StockOutQuantity;
 use think\facade\Db;
 use think\facade\View;
+use think\Model;
 use think\response\Json;
 
 //前端通过axios_post传一个json对象到后端，后端用input函数接收，并不是接收前端input标签中的信息！
@@ -141,7 +144,7 @@ class Manage extends BaseController
     }
 
     /**
-     * 确定物料数量
+     * 设置cookie
      *
      * @return \json
      */
@@ -169,10 +172,18 @@ class Manage extends BaseController
         $params = json_decode(file_get_contents("php://input"), true);
         $StockOutID = $params['StockOutID'];
         $AppraisalID = $params['AppraisalID'];
+        $Date = $params['Date'];
         setCookie('StockOutID',$StockOutID, time() + 3600, '/');
         setCookie('AppraisalID',$AppraisalID, time() + 3600, '/');
-        return jok();
+        setCookie('Date',$Date, time() + 3600, '/');
+        return jok("正在跳转中");
     }
+
+    /**
+     * 确定物料数量
+     *
+     * @return \json
+     */
 
     public function confirmmaterial(){
         $StockOutID = cookie('StockOutID');
@@ -188,15 +199,42 @@ class Manage extends BaseController
         $LeftQuantity = $data['Left_Quantity'];
         setCookie('LeftQuantity',$LeftQuantity, time() + 3600, '/');
         $temp = Db::table('ingredient')
+            ->alias('i')
+            ->join(['material'=>'m'],'i.MaterialID=m.MaterialID')
             ->where([
-                'ProductID' => $ProductID
+                'i.ProductID' => $ProductID
             ])
-            ->field('MaterialID,BOM')
+            ->field('i.MaterialID,i.BOM,m.MaterialName')
             ->select()->toArray();
         foreach ($temp as $key => $value){
-            $temp[$key]['BOM'] = $value['BOM']*$LeftQuantity;
+            $temp[$key]['BOM'] = round($value['BOM']*$LeftQuantity,4);
+//            $temp[$key]['BOM'] = $temp[$key]['BOM'].toFixed(4);
         }
         return jok("", $temp);
 
+    }
+
+    /**
+     * 确定物料数量
+     *
+     * @return \json
+     */
+    public function addbring(){
+        $StockOutID = cookie('StockOutID');
+        $AppraisalID = cookie('AppraisalID');
+        $Date = cookie('Date');
+        $LeftQuantity = cookie('LeftQuantity');
+        $params = json_decode(file_get_contents("php://input"), true);
+        $material = new \app\model\Material();
+        $stockqty = new StockOutQuantity();
+        $stockout = new StockOut();
+        $stockout->addstockout($StockOutID, $AppraisalID, $Date);
+        foreach($params as $key=>$value){
+//          return jok('',$value['MaterialID']);
+            $material->use($value['MaterialID'],$value['input']);
+            $stockqty->addstockoutquantity($StockOutID, $value['MaterialID'], $value['input']);
+        }
+
+        return jok();
     }
 }

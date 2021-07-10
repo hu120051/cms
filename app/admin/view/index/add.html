@@ -13,9 +13,48 @@
             <el-col :span="8"><div class="grid-content bg-purple-light">评审单号：{{ AppraisalID }}</div></el-col>
             <el-col :span="8"><div class="grid-content bg-purple-light">剩余需求数量：{{ Quantity }}</div></el-col>
         </el-row>
+
+    <br>
+        <el-table :data="BOM">
+            <el-table-column prop="MaterialID" label="物料编号">
+            </el-table-column>
+            <el-table-column prop="MaterialName" label="物料名称">
+            </el-table-column>
+            <el-table-column prop="BOM" label="需求数量">
+            </el-table-column>
+            <el-table-column label="实际数量">
+                <template slot-scope="scope">
+                    <el-input-number v-model="scope.row.input"
+                                     :precision="4"
+                                     :controls="false"
+                                     size="small"
+                                     placeholder="请确定数量"
+                                     :min="0"
+                    ></el-input-number>
+                </template>
+            </el-table-column>
+        </el-table>
+        <br>
+        <br>
+        <el-row v-show="showbutton">
+            <el-col :span="2">
+                <div class="grid-content bg-purple-dark">
+                    <el-button type="danger" icon="el-icon-delete" @click="end()" circle></el-button>
+                </div>
+            </el-col>
+
+            <el-col :span="2" :offset="20">
+                <div class="grid-content bg-purple-dark">
+                    <el-button type="success" icon="el-icon-check" @click="postAdd()" circle></el-button>
+                </div>
+            </el-col>
+        </el-row>
+        <el-row v-show="!showbutton">
+            <el-col :span="24">
+                <h1>请检查输入是否正确！</h1>
+            </el-col>
+        </el-row>
     </el-main>
-
-
     {include file="common/footer"/}
     <script>
         new Vue({
@@ -24,7 +63,7 @@
                 form:{
 
                 },
-                material:{
+                BOM:{
 
                 },
                 StockOutID:'',
@@ -68,23 +107,23 @@
                     axios.post('manage/confirmmaterial')
                         .then(function (response)
                         {
-                            that.material = response.data.data;
+                            that.BOM = response.data.data;
+                            that.showbutton = 'true'
                         })
 
                 },
 
                 postAdd(){
                     var that = this;
-                    axios.post('manage/addpurchase', Object.assign({}, PostBase, that.formAdd))
+                    axios.post('manage/addbring', Object.assign(that.BOM))
                         .then(function (response) {
                             if (response.data.code == CODE_SUCCESS) {
                                 that.$message({
                                     message: response.data.msg,
                                     type: 'success'
                                 });
-                                that.dialogFormAdd = false;
                                 setTimeout(function () {
-                                    location.replace('');
+                                    location.replace('/admin/bring');
                                 }, 1000)
                             } else {
                                 that.$message.error(response.data.msg);
@@ -94,6 +133,11 @@
                             that.$message.error('服务器内部错误');
                             console.log(error);
                         });
+                },
+
+                end(){
+                    console.log('end');
+                    location.replace('/admin/bring');
                 },
 
             }

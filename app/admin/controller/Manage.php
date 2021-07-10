@@ -4,6 +4,7 @@ namespace app\admin\controller;
 
 use app\admin\BaseController;
 use app\model\Appraisal;
+use app\model\Ingredient;
 use app\model\Product;
 use app\model\StockIn;
 use app\model\StockOut;
@@ -270,5 +271,42 @@ class Manage extends BaseController
             return jok('添加成功');
         }
         return jerr('未知错误，添加失败');
+    }
+
+    public function getproductingredient(){
+        $params = json_decode(file_get_contents("php://input"), true);
+        $ProductID = $params['ProductID'];
+        setCookie('ProductID',$ProductID, time() + 3600, '/');
+//        $ingredient = new Ingredient();
+//        $data = $ingredient->getingredient($ProductID);
+        $data = Db::table('ingredient')
+            ->alias('i')
+            ->join(['material'=>'m'],'i.MaterialID=m.MaterialID')
+            ->where('ProductID','=',$ProductID)
+            ->order('i.MaterialID','asc')
+            ->field('i.MaterialID,i.ProductID,m.MaterialName,i.BOM')
+            ->select();
+        if($data!=null){
+            return jok('success',$data);
+        }
+        else{
+            return jerr('请检查输入');
+        }
+
+    }
+
+    public function changeingredient(){
+        $params = json_decode(file_get_contents("php://input"), true);
+        $ProductID = $params['ProductID'];
+        $MaterialID = $params['MaterialID'];
+        $BOM = $params['BOM'];
+        $ingredient = new Ingredient();
+        $result = $ingredient->changeingredient($ProductID,$MaterialID,$BOM);
+        if($result){
+            return jok();
+        }
+        else{
+            return jerr('未知错误，修改失败');
+        }
     }
 }

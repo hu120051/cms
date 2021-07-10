@@ -13,12 +13,20 @@ class Ingredient extends Model
     }
 
     public function changeingredient($ProductID,$MaterialID,$BOM){
-        $this->where([
-            'ProductID' => $ProductID,
-            'MaterialID' => $MaterialID,
-        ])->update([
-            'BOM' => $BOM
-        ]);
+        if($BOM=='0'){
+            $this->where([
+                'ProductID' => $ProductID,
+                'MaterialID' => $MaterialID,
+            ])->delete();
+        }
+        else{
+            $this->where([
+                'ProductID' => $ProductID,
+                'MaterialID' => $MaterialID,
+            ])->update([
+                'BOM' => $BOM
+            ]);
+        }
         return true;
     }
 }

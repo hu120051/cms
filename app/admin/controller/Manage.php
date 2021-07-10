@@ -137,7 +137,7 @@ class Manage extends BaseController
             ->join(['appraisal'=>'a'],'so.AppraisalID=a.AppraisalID')
             ->join(['stock_out_quantity'=>'q'],'so.StockOutID=q.StockOutID')
             ->join(['material'=>'m'],'q.MaterialID=m.materialID')
-            ->order('so.StockOutID','desc')
+            ->order('so.Datetime','desc')
             ->field('so.StockOutID,so.AppraisalID,a.ProductID,a.Quantity,q.MaterialID,q.Qty,m.MaterialName,so.Datetime')
             ->select();
         return jok('',$data);
@@ -235,6 +235,10 @@ class Manage extends BaseController
             $stockqty->addstockoutquantity($StockOutID, $value['MaterialID'], $value['input']);
         }
 
+        setCookie('StockOutID',null, time() + 3600, '/');
+        setCookie('AppraisalID',null, time() + 3600, '/');
+        setCookie('Date',null, time() + 3600, '/');
+        setCookie('LeftQuantity',null, time() + 3600, '/');
         return jok();
     }
 }

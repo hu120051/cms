@@ -1,9 +1,6 @@
 var CODE_SUCCESS = 200;
 var username = getCookie("username");
 var PostBase = {
-    username: username,
-    plat: "admin",
-    version: "10000"
 };
 //写cookies
 function setCookie(name, value) {

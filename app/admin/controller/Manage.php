@@ -283,7 +283,10 @@ class Manage extends BaseController
     public function getproductingredient(){
         $params = json_decode(file_get_contents("php://input"), true);
         $ProductID = $params['ProductID'];
+        $product = new Product();
+        $ProductName = $product->where('ProductID','=',$ProductID)->value('ProductName');
         setCookie('ProductID',$ProductID, time() + 3600, '/');
+        setCookie('ProductName',$ProductName, time() + 3600, '/');
 //        $ingredient = new Ingredient();
 //        $data = $ingredient->getingredient($ProductID);
         $data = Db::table('ingredient')

@@ -16,8 +16,8 @@
                 <el-button type="primary" id="submit" @click="onSubmit">查询</el-button>
             </el-form-item>
         </el-form>
+        <h1>产品名称：{{ ProductName }}</h1>
         <br>
-
         <el-table :data="ingredient" >
             <el-table-column prop="MaterialID" label="物料编号">
             </el-table-column>
@@ -94,6 +94,7 @@
                 formInline:{
                     ProductID:'',
                 },
+                ProductName:'',
             },
             mounted () {
 
@@ -128,6 +129,7 @@
                 abc(){
                     var that = this;
                     that.formInline.ProductID = getCookie('ProductID');
+                    that.ProductName = getCookie('ProductName');
                     var that = this;
                     axios.post('manage/getproductingredient', that.formInline)
                         .then(function (response) {
@@ -144,6 +146,7 @@
 
                 onSubmit(){
                     var that = this;
+                    setTimeout(function(){that.ProductName = getCookie('ProductName');}, 200);
                     axios.post('manage/getproductingredient', that.formInline)
                         .then(function (response) {
                             that.ingredient = response.data.data;

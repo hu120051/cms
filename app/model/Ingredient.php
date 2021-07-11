@@ -40,4 +40,9 @@ class Ingredient extends Model
         $this->insert($data);
         return true;
     }
+
+    public function getbom($ProductID){
+        $data = $this->where('ProductID', '=', $ProductID)->field('MaterialID, BOM')->select()->toArray();
+        return $data;
+    }
 }

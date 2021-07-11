@@ -20,6 +20,8 @@
             </el-table-column>
             <el-table-column prop="ProductName" label="产品名称">
             </el-table-column>
+            <el-table-column prop="AppraisalID" label="评审单号">
+            </el-table-column>
             <el-table-column prop="Quantity" label="入库数">
             </el-table-column>
             <el-table-column prop="Unit" label="单位">
@@ -41,17 +43,24 @@
     </el-main>
 
     <!-- 添加框 -->
-    <el-dialog title="添加产品" :visible.sync="dialogFormAdd" :modal-append-to-body='false'>
-        <el-form :model="formAdd" ref="formAdd">
-
-            <el-form-item prop="ProductID" label="产品编号">
-                <el-input size="medium" autocomplete="off" v-model="formAdd.ProductID"></el-input>
+    <el-dialog title="产品入库" :visible.sync="dialogFormAdd" :modal-append-to-body='false'>
+        <el-form :model="formAdd" label-width="100px">
+            <el-form-item prop="ProductInID" label="入库编号">
+                <el-input size="medium" autocomplete="off" v-model="formAdd.ProductInID"></el-input>
             </el-form-item>
-            <el-form-item prop="ProductName" label="产品名称">
-                <el-input size="medium" autocomplete="off" v-model="formAdd.ProductName"></el-input>
+            <el-form-item prop="AppraisalID" label="评审单号">
+                <el-input size="medium" autocomplete="off" v-model="formAdd.AppraisalID"></el-input>
             </el-form-item>
-            <el-form-item prop="Unit" label="产品单位">
-                <el-input size="medium" autocomplete="off" v-model="formAdd.Unit"></el-input>
+            <el-form-item prop="Quantity" label="产品数量">
+                <el-input size="medium" autocomplete="off" v-model="formAdd.Quantity"></el-input>
+            </el-form-item>
+            <el-form-item prop="Date" label="入库时间">
+                <el-date-picker
+                        v-model="formAdd.Date"
+                        value-format="yyyy-MM-dd"
+                        type="date"
+                        placeholder="选择日期">
+                </el-date-picker>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -134,7 +143,7 @@
 
                 postAdd(){
                     var that = this;
-                    axios.post('manage/addproduct', Object.assign({}, PostBase, that.formAdd))
+                    axios.post('manage/addproductin', Object.assign({}, PostBase, that.formAdd))
                         .then(function (response) {
                             if (response.data.code == CODE_SUCCESS) {
                                 that.$message({

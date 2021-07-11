@@ -42,4 +42,12 @@ class Material extends Model
             'Using' => $newusing
         ]);
     }
+
+    public function finshproduct($MaterialID, $change){
+        $oldusing = $this->where('MaterialID', $MaterialID)->value('Using');
+        $newusing = $oldusing - $change;
+        $this->where('MaterialID', $MaterialID)->update([
+            'Using' => $newusing
+        ]);
+    }
 }

@@ -50,4 +50,9 @@ class DataModel
 
     }
 
+    public function getproduct(){
+        $data = Db::table('Appraisal')->where('AppraisalID', '=', '21-06/03')->field('ProductID')->find();
+        dump( $data['ProductID']);
+    }
+
 }

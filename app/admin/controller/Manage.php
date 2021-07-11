@@ -5,7 +5,9 @@ namespace app\admin\controller;
 use app\admin\BaseController;
 use app\model\Appraisal;
 use app\model\Ingredient;
+use app\model\Material;
 use app\model\Product;
+use app\model\ProductIn;
 use app\model\StockIn;
 use app\model\StockOut;
 use app\model\StockOutQuantity;
@@ -340,16 +342,61 @@ class Manage extends BaseController
         }
     }
 
+    /**
+     * 获取产品入库记录
+     *
+     * @return \json
+     */
     public function getallproductin(){
 
         $data = Db::table('product_in')
             ->alias('pi')
             ->join(['product'=>'p'],'pi.ProductID=p.ProductID')
-            ->order('p.ProductID','asc')
+            ->order('pi.ProductInID','desc')
             ->field('pi.ProductInID,pi.ProductID,p.ProductName,pi.Quantity,pi.AppraisalID,pi.Date,p.Unit')
             ->select();
 
         return jok('success',$data);
 
+    }
+
+    /**
+     * 产品入库
+     *
+     * @return \json
+     */
+    public function addproductin(){
+        $params = json_decode(file_get_contents("php://input"), true);
+        $ProductInID = $params['ProductInID'];
+        $AppraisalID = $params['AppraisalID'];
+        $Quantity = $params['Quantity'];
+        $Date = $params['Date'];
+        $appraisal = new Appraisal();
+        //获取产品ID
+        $ProductID = $appraisal->getproduct($AppraisalID);
+        $ingredient = new Ingredient();
+        $material = new Material();
+        $productin = new ProductIn();
+
+        //获取该产品BOM表(Array)
+        $BOM = $ingredient->getbom($ProductID);
+        //根据BOM表确定减少在制仓材料数量
+        foreach ($BOM as $key => $value) {
+            $BOM[$key]['BOM'] = round($value['BOM']*$Quantity, 4);
+            //更新材料数据库
+            $material->finshproduct($value['MaterialID'], $BOM[$key]['BOM']);
+        }
+
+        //修改评审表中剩余需求量
+        $appraisal->finishproduct($AppraisalID,$Quantity);
+        //生成新记录
+        $productin->insert([
+            'ProductInID' => $ProductInID,
+            'ProductID' => $ProductID,
+            'AppraisalID' => $AppraisalID,
+            'Quantity' => $Quantity,
+            'Date' => $Date,
+        ]);
+        return jok();
     }
 }

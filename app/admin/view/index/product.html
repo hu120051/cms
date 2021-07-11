@@ -79,7 +79,7 @@
 
     <!-- 添加框 -->
     <el-dialog title="添加产品" :visible.sync="dialogFormAdd" :modal-append-to-body='false'>
-        <el-form :model="formAdd" ref="formAdd">
+        <el-form :model="formAdd" label-width="100px">
 
             <el-form-item prop="ProductID" label="产品编号">
                 <el-input size="medium" autocomplete="off" v-model="formAdd.ProductID"></el-input>

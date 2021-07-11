@@ -4,6 +4,9 @@
 <head>
   <title>订单评审·库存管理系统</title>
   <style>
+    .el-table .finish-row {
+      background: #dfffe2;
+    }
 
   </style>
   {include file="common/header"/}
@@ -13,7 +16,7 @@
         <el-button type="primary" icon="el-icon-edit" size="small" @click="clickAdd">添加</el-button>
       </el-form-item>
     </el-form>
-    <el-table :data="appraisal.slice((currentPage-1)*pageSize,currentPage*pageSize)">
+    <el-table :data="appraisal.slice((currentPage-1)*pageSize,currentPage*pageSize)" :row-class-name="tableRowClassName">
       <el-table-column prop="AppraisalID" label="评审号">
       </el-table-column>
       <el-table-column prop="ClientID" label="客户编号" >
@@ -210,6 +213,12 @@
                     console.log(error);
                   });
         },
+        tableRowClassName({row}) {
+          if (row.Left_Quantity <= '0') {
+            return 'finish-row';
+          }
+          return '';
+        }
 
       }
     })

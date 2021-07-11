@@ -69,6 +69,21 @@ class Index extends BaseController
     }
 
     /**
+     * 物料入库
+     *
+     * @return string
+     */
+    public function purchase()
+    {
+        $error = $this->access();
+        if($error)
+        {
+            return View::fetch('login');
+        }
+        return View::fetch('purchase');
+    }
+
+    /**
      * 评审表记录
      *
      * @return string

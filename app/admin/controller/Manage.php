@@ -144,6 +144,7 @@ class Manage extends BaseController
             ->join(['appraisal'=>'a'],'so.AppraisalID=a.AppraisalID')
             ->join(['stock_out_quantity'=>'q'],'so.StockOutID=q.StockOutID')
             ->join(['material'=>'m'],'q.MaterialID=m.materialID')
+            ->order('so.Datetime','desc')
             ->order('so.StockOutID','desc')
             ->field('so.StockOutID,so.AppraisalID,a.ProductID,a.Quantity,q.MaterialID,q.Qty,m.MaterialName,so.Datetime')
             ->select();
@@ -235,6 +236,17 @@ class Manage extends BaseController
         $material = new \app\model\Material();
         $stockqty = new StockOutQuantity();
         $stockout = new StockOut();
+
+        //先循环一轮检测是否有未填写
+        foreach($params as $key=>$value){
+//          return jok('',$value['MaterialID']);
+
+            if(!array_key_exists('input', $value)){
+                return jerr('请填写完整，未出库请置0！');
+            }
+
+        }
+
         $stockout->addstockout($StockOutID, $AppraisalID, $Date);
         foreach($params as $key=>$value){
 //          return jok('',$value['MaterialID']);

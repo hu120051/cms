@@ -4,6 +4,7 @@ namespace app\admin\controller;
 
 use app\admin\BaseController;
 use app\model\Appraisal;
+use app\model\Client;
 use app\model\Ingredient;
 use app\model\Material;
 use app\model\Product;
@@ -496,4 +497,44 @@ class Manage extends BaseController
         $supplier->addsupplier($SupplierID,$SupplierName);
         return jok();
     }
+
+    /**
+     * 获取全部客户
+     *
+     * @return \json
+     */
+    public function getallclient(){
+        $client = new Client();
+        $data = $client->getallclient();
+        return jok('',$data);
+    }
+
+    /**
+     * 修改客户信息
+     *
+     * @return \json
+     */
+    public function changeclientname(){
+        $params = json_decode(file_get_contents("php://input"), true);
+        $ClientID = $params['ClientID'];
+        $ClientName = $params['ClientName'];
+        $client = new Client();
+        $client->changename($ClientID,$ClientName);
+        return jok();
+    }
+
+    /**
+     * 添加新客户
+     *
+     * @return \json
+     */
+    public function addclient(){
+        $params = json_decode(file_get_contents("php://input"), true);
+        $ClientID = $params['ClientID'];
+        $ClientName = $params['ClientName'];
+        $client = new Client();
+        $client->addclient($ClientID,$ClientName);
+        return jok();
+    }
+
 }

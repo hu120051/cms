@@ -47,15 +47,15 @@
     </el-main>
 
     <!-- 添加框 -->
-    <el-dialog title="添加配料" :visible.sync="dialogFormAdd" :modal-append-to-body='false' width="500px">
+    <el-dialog title="添加供应商" :visible.sync="dialogFormAdd" :modal-append-to-body='false' width="500px">
         <el-form :model="formAdd" label-width="100px">
 
 
-            <el-form-item prop="SupplierID" label="供应商编号">
-                <el-input size="medium" autocomplete="off" v-model="formAdd.SupplierID"></el-input>
+            <el-form-item prop="ClientID" label="客户编号">
+                <el-input size="medium" autocomplete="off" v-model="formAdd.ClientID"></el-input>
             </el-form-item>
-            <el-form-item prop="SupplierName" label="供应商名称">
-                <el-input size="medium" autocomplete="off" v-model="formAdd.SupplierName"></el-input>
+            <el-form-item prop="ClientName" label="客户名称">
+                <el-input size="medium" autocomplete="off" v-model="formAdd.ClientName"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -64,19 +64,6 @@
     </el-dialog>
     {include file="common/footer"/}
     <script>
-        function BindEnter() {
-
-            if (event.keyCode == 13) {
-
-                event.cancelBubble = true;
-
-                event.returnValue = false;
-
-                document.getElementById('submit').click();
-
-            }
-
-        }
         new Vue({
             el: '#app',
             data:{

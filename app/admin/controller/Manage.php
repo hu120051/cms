@@ -380,6 +380,7 @@ class Manage extends BaseController
         $ingredient = new Ingredient();
         $material = new Material();
         $productin = new ProductIn();
+        $product = new Product();
 
         //获取该产品BOM表(Array)
         $BOM = $ingredient->getbom($ProductID);
@@ -392,6 +393,8 @@ class Manage extends BaseController
 
         //修改评审表中剩余需求量
         $appraisal->finishproduct($AppraisalID,$Quantity);
+        //修改产品库存
+        $product->productin($ProductID, $Quantity);
         //生成新记录
         $productin->insert([
             'ProductInID' => $ProductInID,

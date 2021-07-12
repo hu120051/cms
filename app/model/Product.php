@@ -22,4 +22,12 @@ class Product extends Model
         $this->insert($data);
         return true;
     }
+
+    public function productin($ProductID, $Quantity){
+        $oldquantity = $this->where('ProductID', $ProductID)->value('Stock');
+        $newquantity = $oldquantity + $Quantity;
+        $this->where('ProductID', '=', $ProductID)->update([
+            'Stock' => $newquantity,
+        ]);
+    }
 }

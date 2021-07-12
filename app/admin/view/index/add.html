@@ -9,7 +9,7 @@
     {include file="common/header"/}
     <el-main>
         <el-row>
-            <el-col :span="8"><div class="grid-content bg-purple">产品编号：{{ StockOutID }}</div></el-col>
+            <el-col :span="8"><div class="grid-content bg-purple">出库编号：{{ StockOutID }}</div></el-col>
             <el-col :span="8"><div class="grid-content bg-purple-light">评审单号：{{ AppraisalID }}</div></el-col>
             <el-col :span="8"><div class="grid-content bg-purple-light">剩余需求数量：{{ Quantity }}</div></el-col>
         </el-row>
@@ -101,9 +101,12 @@
 
                 abc(){
                     var that = this;
-                    that.StockOutID = getCookie('StockOutID');
-                    that.AppraisalID = getCookie('AppraisalID');
-                    that.Quantity = getCookie('LeftQuantity');
+                    setTimeout(function(){
+                        that.StockOutID = getCookie('StockOutID');
+                        that.AppraisalID = getCookie('AppraisalID');
+                        that.Quantity = getCookie('LeftQuantity');
+                        }, 200);
+
                     axios.post('manage/confirmmaterial')
                         .then(function (response)
                         {

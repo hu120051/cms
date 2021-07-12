@@ -55,4 +55,16 @@ class DataModel
         dump( $data['ProductID']);
     }
 
+    public function jointest(){
+        $data = Db::table('sale')
+            ->alias('s')
+            ->join(['appraisal'=>'a'],'s.AppraisalID=a.AppraisalID')
+            ->join(['client'=>'c'], 'a.ClientID=c.ClientID')
+            ->join(['product'=>'p'], 'a.ProductID=p.ProductID')
+            ->order('s.SaleID','desc')
+            ->field('s.SaleID,s.AppraisalID,a.ProductID,p.ProductName,a.ClientID,c.ClientName,s.Quantity,s.Date')
+            ->select();
+        dump($data);
+    }
+
 }

@@ -12,9 +12,8 @@ Route::rule('add','admin/index/add');
 Route::rule('product','admin/index/product');
 Route::rule('productin','admin/index/productin');
 Route::rule('ingredient','admin/index/ingredient');
+Route::rule('sale','admin/index/sale');
 
-Route::rule('myinfo','staff/index/myinfo');
-Route::rule('addapplication','staff/index/addapplication');
 return [
     // pathinfo分隔符
     'pathinfo_depr'         => '/',

@@ -142,6 +142,12 @@ class Index extends BaseController
         }
         return View::fetch('ingredient');
     }
+
+    /**
+     * 添加出库单
+     *
+     * @return string
+     */
     public function add()
     {
         $error = $this->access();
@@ -152,4 +158,18 @@ class Index extends BaseController
         return View::fetch('add');
     }
 
+    /**
+     * 售出产品
+     *
+     * @return string
+     */
+    public function sale()
+    {
+        $error = $this->access();
+        if($error)
+        {
+            return View::fetch('login');
+        }
+        return View::fetch('sale');
+    }
 }

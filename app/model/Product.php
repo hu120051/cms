@@ -30,4 +30,12 @@ class Product extends Model
             'Stock' => $newquantity,
         ]);
     }
+
+    public function productout($ProductID, $Quantity){
+        $oldquantity = $this->where('ProductID', $ProductID)->value('Stock');
+        $newquantity = $oldquantity - $Quantity;
+        $this->where('ProductID', '=', $ProductID)->update([
+            'Stock' => $newquantity,
+        ]);
+    }
 }

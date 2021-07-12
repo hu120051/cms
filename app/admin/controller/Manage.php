@@ -8,6 +8,7 @@ use app\model\Ingredient;
 use app\model\Material;
 use app\model\Product;
 use app\model\ProductIn;
+use app\model\Sale;
 use app\model\StockIn;
 use app\model\StockOut;
 use app\model\StockOutQuantity;
@@ -141,7 +142,7 @@ class Manage extends BaseController
             ->join(['appraisal'=>'a'],'so.AppraisalID=a.AppraisalID')
             ->join(['stock_out_quantity'=>'q'],'so.StockOutID=q.StockOutID')
             ->join(['material'=>'m'],'q.MaterialID=m.materialID')
-            ->order('so.Datetime','desc')
+            ->order('so.StockOutID','desc')
             ->field('so.StockOutID,so.AppraisalID,a.ProductID,a.Quantity,q.MaterialID,q.Qty,m.MaterialName,so.Datetime')
             ->select();
         return jok('',$data);
@@ -235,8 +236,10 @@ class Manage extends BaseController
         $stockout->addstockout($StockOutID, $AppraisalID, $Date);
         foreach($params as $key=>$value){
 //          return jok('',$value['MaterialID']);
-            $material->use($value['MaterialID'],$value['input']);
-            $stockqty->addstockoutquantity($StockOutID, $value['MaterialID'], $value['input']);
+            if($value['input'] != '0') {
+                $material->use($value['MaterialID'], $value['input']);
+                $stockqty->addstockoutquantity($StockOutID, $value['MaterialID'], $value['input']);
+            }
         }
 
         setCookie('StockOutID',null, time() + 3600, '/');
@@ -392,7 +395,8 @@ class Manage extends BaseController
         }
 
         //修改评审表中剩余需求量
-        $appraisal->finishproduct($AppraisalID,$Quantity);
+        //改为售出后修改
+//        $appraisal->finishproduct($AppraisalID,$Quantity);
         //修改产品库存
         $product->productin($ProductID, $Quantity);
         //生成新记录
@@ -403,6 +407,48 @@ class Manage extends BaseController
             'Quantity' => $Quantity,
             'Date' => $Date,
         ]);
+        return jok();
+    }
+
+    /**
+     * 获取产品销售记录
+     *
+     * @return \json
+     */
+    public function getallsale(){
+        $data = Db::table('sale')
+            ->alias('s')
+            ->join(['appraisal'=>'a'],'s.AppraisalID=a.AppraisalID')
+            ->join(['client'=>'c'], 'a.ClientID=c.ClientID')
+            ->join(['product'=>'p'], 'a.ProductID=p.ProductID')
+            ->order('s.SaleID','desc')
+            ->field('s.SaleID,s.AppraisalID,a.ProductID,p.ProductName,a.ClientID,c.ClientName,s.Quantity,s.Date')
+            ->select();
+
+        return jok('success',$data);
+    }
+
+    public function addsale(){
+        $params = json_decode(file_get_contents("php://input"), true);
+        $SaleID = $params['SaleID'];
+        $AppraisalID = $params['AppraisalID'];
+        $Quantity = $params['Quantity'];
+        $Date = $params['Date'];
+
+        $appraisal = new Appraisal();
+        //获取产品ID
+        $ProductID = $appraisal->getproduct($AppraisalID);
+
+        //修改评审表中剩余需求量
+        $appraisal->finishproduct($AppraisalID,$Quantity);
+
+        //修改产品库存
+        $product = new Product();
+        $product->productout($ProductID, $Quantity);
+
+        //生成记录
+        $sale = new Sale();
+        $sale->addnewsale($SaleID, $AppraisalID, $ProductID, $Quantity, $Date);
         return jok();
     }
 }

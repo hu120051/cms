@@ -172,4 +172,34 @@ class Index extends BaseController
         }
         return View::fetch('sale');
     }
+
+    /**
+     * 供应商管理
+     *
+     * @return string
+     */
+    public function supplier()
+    {
+        $error = $this->access();
+        if($error)
+        {
+            return View::fetch('login');
+        }
+        return View::fetch('supplier');
+    }
+
+    /**
+     * 客户管理
+     *
+     * @return string
+     */
+    public function client()
+    {
+        $error = $this->access();
+        if($error)
+        {
+            return View::fetch('login');
+        }
+        return View::fetch('client');
+    }
 }

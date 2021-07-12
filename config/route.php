@@ -13,6 +13,8 @@ Route::rule('product','admin/index/product');
 Route::rule('productin','admin/index/productin');
 Route::rule('ingredient','admin/index/ingredient');
 Route::rule('sale','admin/index/sale');
+Route::rule('supplier','admin/index/supplier');
+Route::rule('client','admin/index/client');
 
 return [
     // pathinfo分隔符

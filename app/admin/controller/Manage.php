@@ -12,6 +12,7 @@ use app\model\Sale;
 use app\model\StockIn;
 use app\model\StockOut;
 use app\model\StockOutQuantity;
+use app\model\Supplier;
 use think\facade\Db;
 use think\facade\View;
 use think\Model;
@@ -428,6 +429,11 @@ class Manage extends BaseController
         return jok('success',$data);
     }
 
+    /**
+     * 添加销售记录
+     *
+     * @return \json
+     */
     public function addsale(){
         $params = json_decode(file_get_contents("php://input"), true);
         $SaleID = $params['SaleID'];
@@ -449,6 +455,45 @@ class Manage extends BaseController
         //生成记录
         $sale = new Sale();
         $sale->addnewsale($SaleID, $AppraisalID, $ProductID, $Quantity, $Date);
+        return jok();
+    }
+
+    /**
+     * 获取全部供应商
+     *
+     * @return \json
+     */
+    public function getallsupplier(){
+        $supplier = new Supplier();
+        $data = $supplier->getallsupplier();
+        return jok('',$data);
+    }
+
+    /**
+     * 修改供应商信息
+     *
+     * @return \json
+     */
+    public function changesuppliername(){
+        $params = json_decode(file_get_contents("php://input"), true);
+        $SupplierID = $params['SupplierID'];
+        $SupplierName = $params['SupplierName'];
+        $supplier = new Supplier();
+        $supplier->changename($SupplierID,$SupplierName);
+        return jok();
+    }
+
+    /**
+     * 添加新供应商
+     *
+     * @return \json
+     */
+    public function addsupplier(){
+        $params = json_decode(file_get_contents("php://input"), true);
+        $SupplierID = $params['SupplierID'];
+        $SupplierName = $params['SupplierName'];
+        $supplier = new Supplier();
+        $supplier->addsupplier($SupplierID,$SupplierName);
         return jok();
     }
 }

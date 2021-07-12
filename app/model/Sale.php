@@ -5,7 +5,7 @@ use think\Model;
 
 class Sale extends Model
 {
-    protected $pk = 'ProductInID';
+    protected $pk = 'SaleID';
 
     public function addnewsale($SaleID, $AppraisalID, $ProductID, $Quantity, $Date){
         $data = [

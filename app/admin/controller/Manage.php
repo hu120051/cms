@@ -47,12 +47,58 @@ class Manage extends BaseController
         $MaterialName = $params['MaterialName'];
         $Unit = $params['Unit'];
         $Univalence = $params['Univalence'];
-        $material = new \app\model\Material();
+        $material = new Material();
         $result = $material->addmaterial($MaterialID, $MaterialName, $Unit, $Univalence);
         if ($result) {
             return jok('添加成功！');
         }
         return jerr('添加失败！');
+    }
+
+
+    /**
+     * 获取物料信息
+     *
+     * @return \json
+     */
+    public function getmaterialdata(){
+        $params = json_decode(file_get_contents("php://input"), true);
+        $MaterialID = $params['MaterialID'];
+        $material = new Material();
+        $data = $material->getmaterial($MaterialID);
+
+        return jok('',$data);
+    }
+
+    /**
+     * 更新物料信息
+     *
+     *
+     */
+    public function updatematerial(){
+        $params = json_decode(file_get_contents("php://input"), true);
+        $MaterialID = $params['MaterialID'];
+        $MaterialName = $params['MaterialName'];
+        $Unit = $params['Unit'];
+        $Univalence = $params['Univalence'];
+        $material = new Material();
+        $material->updatematerial($MaterialID,$MaterialName,$Unit,$Univalence);
+
+        return jok('修改成功');
+    }
+
+    /**
+     * 删除物料
+     *
+     *
+     */
+    public function deletematerial(){
+        $params = json_decode(file_get_contents("php://input"), true);
+        $MaterialID = $params['MaterialID'];
+        $material = new Material();
+        $material->deletematerial($MaterialID);
+
+        return jok('删除成功');
     }
 
     /**
@@ -548,5 +594,6 @@ class Manage extends BaseController
         $client->addclient($ClientID,$ClientName);
         return jok();
     }
+
 
 }

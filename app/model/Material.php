@@ -12,6 +12,11 @@ class Material extends Model
         return $this->order('MaterialID','asc')->select();
     }
 
+    public function getmaterial($MaterialID)
+    {
+        return $this->where('MaterialID','=',$MaterialID)->select()->toArray();
+    }
+
     public function addmaterial($MaterialID, $MaterialName, $Unit, $Univalence){
         $data = [
             'MaterialID' => $MaterialID,
@@ -21,6 +26,18 @@ class Material extends Model
         ];
         $this->insert($data);
         return true;
+    }
+
+    public function deletematerial($MaterialID){
+        $this->where('MaterialID', '=', $MaterialID)->delete();
+    }
+
+    public function updatematerial($MaterialID,$MaterialName,$Unit,$Univalence){
+        $this->where('MaterialID','=',$MaterialID)->update([
+            'MaterialName' => $MaterialName,
+            'Unit' => $Unit,
+            'Univalence' => $Univalence
+        ]);
     }
 
     public function addmaterialstock($MaterialID, $change){

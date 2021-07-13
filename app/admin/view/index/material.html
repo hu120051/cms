@@ -56,23 +56,22 @@
   </el-main>
   <!-- 修改框 -->
   <el-dialog title="修改用户信息" :visible.sync="dialogFormEdit" :modal-append-to-body='false'>
-    <el-form :model="formEdit" ref="formEdit">
-
-      <el-form-item prop="uid" label="uid(不可更改)" >
-        <el-input size="medium" autocomplete="off" v-model="formEdit.uid" readonly="true"></el-input>
+    <el-form :model="formEdit" ref="formEdit"  label-width="150px">
+      <el-form-item prop="MaterialID" label="物料编号(不可更改)" >
+        <el-input size="medium" autocomplete="off" v-model="formEdit.MaterialID" :readonly="true"></el-input>
       </el-form-item>
-      <el-form-item prop="username" label="用户名(不可更改)">
-        <el-input size="medium" autocomplete="off" v-model="formEdit.username" readonly="true"></el-input>
+      <el-form-item prop="MaterialName" label="物料名称">
+        <el-input size="medium" autocomplete="off" v-model="formEdit.MaterialName"></el-input>
       </el-form-item>
-      <el-form-item prop="name" label="姓名" :label-width="50">
-        <el-input size="medium" autocomplete="off" v-model="formEdit.name"></el-input>
+      <el-form-item prop="Unit" label="单位">
+        <el-input size="medium" autocomplete="off" v-model="formEdit.Unit"></el-input>
       </el-form-item>
-      <el-form-item prop="group" label="用户组" :label-width="50">
-        <el-radio-group v-model="formEdit.group">
-          <el-radio label="superadmin">超级管理员</el-radio>
-          <el-radio label="admin">管理员</el-radio>
-          <el-radio label="staff">员工</el-radio>
-        </el-radio-group>
+      <el-form-item prop="Univalence" label="单价">
+        <el-input-number
+                v-model="formEdit.Univalence"
+                :precision="4"
+                :controls="false"
+                size="small"></el-input-number>
       </el-form-item>
 
     </el-form>
@@ -110,9 +109,7 @@
         material:{
 
         },
-        formEdit:{
-
-        },
+        formEdit:[],
         formAdd:{
 
         },
@@ -148,7 +145,7 @@
                   })
                   .catch(function (error)
                   {
-                    that.$message.error('tuichu失败，服务器内部错误');
+                    that.$message.error('退出失败，服务器内部错误');
                   })
           ;
 
@@ -187,8 +184,8 @@
             cancelButtonText: '取消',
             type: 'warning'
           }).then(()=>{
-            axios.post('user/deleteuser', Object.assign({}, PostBase, {
-              pk: row.uid
+            axios.post('manage/deletematerial', Object.assign({}, PostBase, {
+              MaterialID: row.MaterialID
             }))
                     .then(function (response) {
                       if (response.data.code == CODE_SUCCESS) {
@@ -212,12 +209,12 @@
         clickEdit(row){
           var that = this;
           that.formEdit = row;
-          axios.post('user/getdata', Object.assign({}, PostBase, {
-            pk: row.uid
+          axios.post('manage/getmaterialdata', Object.assign({}, PostBase, {
+            MaterialID: row.MaterialID
           }))
                   .then(function (response) {
                     if (response.data.code == CODE_SUCCESS) {
-                      that.formEdit = response.data.data;
+                      that.formEdit = response.data.data[0];
                       that.dialogFormEdit = true;
                     } else {
                       that.$message.error(response.data.msg);
@@ -252,7 +249,7 @@
         },
         postEdit(){
           var that = this;
-          axios.post('user/updateuser', Object.assign({}, PostBase, that.formEdit))
+          axios.post('manage/updatematerial', Object.assign({}, PostBase, that.formEdit))
                   .then(function (response) {
                     if (response.data.code == CODE_SUCCESS) {
                       that.$message({

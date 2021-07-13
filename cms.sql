@@ -11,7 +11,7 @@
  Target Server Version : 50728
  File Encoding         : 65001
 
- Date: 06/07/2021 16:55:29
+ Date: 13/07/2021 09:24:06
 */
 
 SET NAMES utf8mb4;
@@ -38,8 +38,8 @@ CREATE TABLE `appraisal`  (
 -- ----------------------------
 -- Records of appraisal
 -- ----------------------------
-INSERT INTO `appraisal` VALUES ('21-06/03', 50001, 10001, 20, 20, '2021-07-04');
-INSERT INTO `appraisal` VALUES ('21-07/05', 50002, 10002, 600, 600, '2021-07-05');
+INSERT INTO `appraisal` VALUES ('21-06/03', 50001, 10001, 20, 0, '2021-07-04');
+INSERT INTO `appraisal` VALUES ('21-07/05', 50002, 10002, 600, 357, '2021-07-05');
 
 -- ----------------------------
 -- Table structure for client
@@ -55,7 +55,8 @@ CREATE TABLE `client`  (
 -- Records of client
 -- ----------------------------
 INSERT INTO `client` VALUES (10001, 'Client1');
-INSERT INTO `client` VALUES (10002, 'Client2');
+INSERT INTO `client` VALUES (10002, 'Client2_demo');
+INSERT INTO `client` VALUES (10003, 'test');
 
 -- ----------------------------
 -- Table structure for ingredient
@@ -74,8 +75,14 @@ CREATE TABLE `ingredient`  (
 -- ----------------------------
 -- Records of ingredient
 -- ----------------------------
-INSERT INTO `ingredient` VALUES (50001, 200001, 23.4562);
+INSERT INTO `ingredient` VALUES (50001, 200001, 23.6262);
 INSERT INTO `ingredient` VALUES (50001, 200002, 1.6524);
+INSERT INTO `ingredient` VALUES (50002, 200001, 62.5624);
+INSERT INTO `ingredient` VALUES (50002, 200002, 3.2616);
+INSERT INTO `ingredient` VALUES (50002, 200003, 1.0000);
+INSERT INTO `ingredient` VALUES (50003, 200001, 12.5262);
+INSERT INTO `ingredient` VALUES (50003, 200003, 2.6260);
+INSERT INTO `ingredient` VALUES (50004, 200002, 12.5650);
 
 -- ----------------------------
 -- Table structure for material
@@ -94,9 +101,9 @@ CREATE TABLE `material`  (
 -- ----------------------------
 -- Records of material
 -- ----------------------------
-INSERT INTO `material` VALUES (200001, 'Material01', 90.5282, 0.0000, 'kg', 5.2340);
-INSERT INTO `material` VALUES (200002, 'Material', 78.2999, 0.0000, '个', 56.2000);
-INSERT INTO `material` VALUES (200003, 'test', 6184.5860, 0.0000, '个', 12.1200);
+INSERT INTO `material` VALUES (200001, 'Material01', 15053.0000, 10332.7366, 'kg', 5.2340);
+INSERT INTO `material` VALUES (200002, 'Material', 15556.6161, 51544.6930, 'mg', 56.2000);
+INSERT INTO `material` VALUES (200003, 'test', 6167.5860, 6137.1600, '个', 12.1200);
 
 -- ----------------------------
 -- Table structure for material_return
@@ -146,7 +153,9 @@ CREATE TABLE `product`  (
 -- Records of product
 -- ----------------------------
 INSERT INTO `product` VALUES (50001, 'Product01', 20, '个');
-INSERT INTO `product` VALUES (50002, 'Product02', 0, '件');
+INSERT INTO `product` VALUES (50002, 'Product02', 10, '件');
+INSERT INTO `product` VALUES (50003, 'Test', 0, 'test');
+INSERT INTO `product` VALUES (50004, 'Product04', 0, '块');
 
 -- ----------------------------
 -- Table structure for product_in
@@ -155,17 +164,21 @@ DROP TABLE IF EXISTS `product_in`;
 CREATE TABLE `product_in`  (
   `ProductInID` bigint(30) NOT NULL COMMENT '产品入库记录编号',
   `ProductID` bigint(30) NULL DEFAULT NULL COMMENT '产品编号',
+  `AppraisalID` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `Quantity` bigint(30) NULL DEFAULT NULL COMMENT '产品数量',
   `Date` date NULL DEFAULT NULL COMMENT '入库时间',
   PRIMARY KEY (`ProductInID`) USING BTREE,
   INDEX `product_in_ibfk_1`(`ProductID`) USING BTREE,
-  CONSTRAINT `product_in_ibfk_1` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ProductID`) ON DELETE SET NULL ON UPDATE SET NULL
+  INDEX `AppraisalID`(`AppraisalID`) USING BTREE,
+  CONSTRAINT `product_in_ibfk_1` FOREIGN KEY (`ProductID`) REFERENCES `product` (`ProductID`) ON DELETE SET NULL ON UPDATE SET NULL,
+  CONSTRAINT `product_in_ibfk_2` FOREIGN KEY (`AppraisalID`) REFERENCES `appraisal` (`AppraisalID`) ON DELETE SET NULL ON UPDATE SET NULL
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of product_in
 -- ----------------------------
-INSERT INTO `product_in` VALUES (90001, 50001, 20, '2021-07-04');
+INSERT INTO `product_in` VALUES (90001, 50001, '21-06/03', 20, '2021-07-04');
+INSERT INTO `product_in` VALUES (90002, 50002, '21-07/05', 30, '2021-07-11');
 
 -- ----------------------------
 -- Table structure for sale
@@ -175,7 +188,7 @@ CREATE TABLE `sale`  (
   `SaleID` bigint(30) NOT NULL COMMENT '销售表编号',
   `AppraisalID` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '评审表编号',
   `ProductID` bigint(30) NULL DEFAULT NULL COMMENT '产品编号',
-  `Quantity` double(30, 4) NULL DEFAULT NULL COMMENT '销售数量',
+  `Quantity` bigint(30) NULL DEFAULT NULL COMMENT '销售数量',
   `Date` date NULL DEFAULT NULL COMMENT '销售完成时间',
   PRIMARY KEY (`SaleID`) USING BTREE,
   INDEX `sale_ibfk_1`(`AppraisalID`) USING BTREE,
@@ -187,7 +200,8 @@ CREATE TABLE `sale`  (
 -- ----------------------------
 -- Records of sale
 -- ----------------------------
-INSERT INTO `sale` VALUES (60001, '21-06/03', NULL, NULL, '2021-07-04');
+INSERT INTO `sale` VALUES (60001, '21-06/03', 50001, 20, '2021-07-04');
+INSERT INTO `sale` VALUES (60002, '21-07/05', 50002, 20, '2021-07-12');
 
 -- ----------------------------
 -- Table structure for stock_in
@@ -229,7 +243,7 @@ DROP TABLE IF EXISTS `stock_out`;
 CREATE TABLE `stock_out`  (
   `StockOutID` bigint(30) NOT NULL COMMENT '出库记录信息编号',
   `AppraisalID` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '订单评审编号',
-  `Datetime` datetime NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '出库时间',
+  `Datetime` date NULL DEFAULT NULL COMMENT '出库时间',
   PRIMARY KEY (`StockOutID`) USING BTREE,
   INDEX `stock_out_ibfk_1`(`AppraisalID`) USING BTREE,
   CONSTRAINT `stock_out_ibfk_1` FOREIGN KEY (`AppraisalID`) REFERENCES `appraisal` (`AppraisalID`) ON DELETE SET NULL ON UPDATE SET NULL
@@ -238,7 +252,14 @@ CREATE TABLE `stock_out`  (
 -- ----------------------------
 -- Records of stock_out
 -- ----------------------------
-INSERT INTO `stock_out` VALUES (80001, '21-06/03', '2021-07-06 16:42:57');
+INSERT INTO `stock_out` VALUES (51361, '21-07/05', '2021-07-12');
+INSERT INTO `stock_out` VALUES (80001, '21-06/03', '2021-07-06');
+INSERT INTO `stock_out` VALUES (80002, '21-06/03', '2021-07-10');
+INSERT INTO `stock_out` VALUES (80003, '21-06/03', '2021-07-11');
+INSERT INTO `stock_out` VALUES (80004, '21-07/05', '2021-07-10');
+INSERT INTO `stock_out` VALUES (80005, '21-07/05', '2021-07-12');
+INSERT INTO `stock_out` VALUES (80006, '21-07/05', '2021-07-12');
+INSERT INTO `stock_out` VALUES (80007, '21-07/05', '2021-07-13');
 
 -- ----------------------------
 -- Table structure for stock_out_quantity
@@ -257,8 +278,24 @@ CREATE TABLE `stock_out_quantity`  (
 -- ----------------------------
 -- Records of stock_out_quantity
 -- ----------------------------
+INSERT INTO `stock_out_quantity` VALUES (51361, 200001, 1.0000);
+INSERT INTO `stock_out_quantity` VALUES (51361, 200002, 1.0000);
+INSERT INTO `stock_out_quantity` VALUES (51361, 200003, 2.0000);
 INSERT INTO `stock_out_quantity` VALUES (80001, 200001, 23.4562);
 INSERT INTO `stock_out_quantity` VALUES (80001, 200002, 1.6524);
+INSERT INTO `stock_out_quantity` VALUES (80002, 200001, 469.0000);
+INSERT INTO `stock_out_quantity` VALUES (80002, 200002, 33.0000);
+INSERT INTO `stock_out_quantity` VALUES (80003, 200001, 266.0000);
+INSERT INTO `stock_out_quantity` VALUES (80003, 200002, 5.2999);
+INSERT INTO `stock_out_quantity` VALUES (80004, 200001, 812.0000);
+INSERT INTO `stock_out_quantity` VALUES (80004, 200002, 215.0000);
+INSERT INTO `stock_out_quantity` VALUES (80004, 200003, 12.0000);
+INSERT INTO `stock_out_quantity` VALUES (80005, 200001, 1.0000);
+INSERT INTO `stock_out_quantity` VALUES (80005, 200002, 1.0000);
+INSERT INTO `stock_out_quantity` VALUES (80006, 200001, 1.0000);
+INSERT INTO `stock_out_quantity` VALUES (80006, 200003, 3.0000);
+INSERT INTO `stock_out_quantity` VALUES (80007, 200001, 12.0000);
+INSERT INTO `stock_out_quantity` VALUES (80007, 200002, 12.0000);
 
 -- ----------------------------
 -- Table structure for supplier
@@ -275,5 +312,6 @@ CREATE TABLE `supplier`  (
 -- ----------------------------
 INSERT INTO `supplier` VALUES (100001, 'Supplier01');
 INSERT INTO `supplier` VALUES (100002, 'Supplier02');
+INSERT INTO `supplier` VALUES (100003, 'test');
 
 SET FOREIGN_KEY_CHECKS = 1;

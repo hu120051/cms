@@ -19,8 +19,6 @@
     <el-table :data="appraisal.slice((currentPage-1)*pageSize,currentPage*pageSize)" :row-class-name="tableRowClassName">
       <el-table-column prop="AppraisalID" label="评审号">
       </el-table-column>
-      <el-table-column prop="ClientID" label="客户编号" >
-      </el-table-column>
       <el-table-column prop="ClientName" label="客户名称">
       </el-table-column>
       <el-table-column prop="ProductID" label="产品编号">
@@ -31,7 +29,11 @@
       </el-table-column>
       <el-table-column prop="Left_Quantity" label="剩余需求数量">
       </el-table-column>
-      <el-table-column prop="Date" label="生成时间">
+      <el-table-column prop="Date" label="接单日期">
+      </el-table-column>
+      <el-table-column prop="EndDate" label="交单日期">
+      </el-table-column>
+      <el-table-column prop="Remarks" label="备注">
       </el-table-column>
       <el-table-column label="操作" width="70%">
         <template slot-scope="scope">
@@ -61,8 +63,8 @@
       <el-form-item prop="AppraisalID" label="评审单号">
         <el-input size="medium" autocomplete="off" v-model="formAdd.AppraisalID"></el-input>
       </el-form-item>
-      <el-form-item prop="ClientID" label="客户编号">
-        <el-input size="medium" autocomplete="off" v-model="formAdd.ClientID"></el-input>
+      <el-form-item prop="ClientName" label="客户名称">
+        <el-input size="medium" autocomplete="off" v-model="formAdd.ClientName"></el-input>
       </el-form-item>
       <el-form-item prop="ProductID" label="产品编号">
         <el-input size="medium" autocomplete="off" v-model="formAdd.ProductID"></el-input>
@@ -77,6 +79,22 @@
                 type="date"
                 placeholder="选择日期">
         </el-date-picker>
+      </el-form-item>
+      <el-form-item prop="Date" label="交单日期">
+        <el-date-picker
+                v-model="formAdd.EndDate"
+                value-format="yyyy-MM-dd"
+                type="date"
+                placeholder="选择日期">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item>
+        <el-input
+                type="textarea"
+                autosize
+                placeholder="请输入备注"
+                v-model="formAdd.Remarks">
+        </el-input>
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">

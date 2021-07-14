@@ -124,6 +124,7 @@ class Manage extends BaseController
      */
     public function addpurchase()
     {
+        //todo: 自动生成可选供应商
         $params = json_decode(file_get_contents("php://input"), true);
         $PurchaseID = $params['PurchaseID'];
         $SupplierID = $params['SupplierID'];
@@ -150,9 +151,8 @@ class Manage extends BaseController
         $data = Db::table('appraisal')
             ->alias('a')
             ->join(['product'=>'p'],'a.ProductID=p.ProductID')
-            ->join(['Client'=>'c'],'a.ClientID=c.ClientID')
             ->order('a.AppraisalID','desc')
-            ->field('a.AppraisalID,a.ClientID,c.ClientName,a.ProductID,p.ProductName,a.Quantity,a.Left_Quantity,a.Date')
+            ->field('a.AppraisalID,a.ClientName,a.ProductID,p.ProductName,a.Quantity,a.Left_Quantity,a.Date,a.EndDate,a.Remarks')
             ->select();
         return jok('',$data);
 
@@ -167,11 +167,13 @@ class Manage extends BaseController
         $params = json_decode(file_get_contents("php://input"), true);
         $AppraisalID = $params['AppraisalID'];
         $ProductID = $params['ProductID'];
-        $ClientID = $params['ClientID'];
+        $ClientName = $params['ClientName'];
         $Date = $params['Date'];
+        $EndDate = $params['EndDate'];
+        $Remarks = $params['Remarks'];
         $Quantity = $params['Quantity'];
         $appraisal = new Appraisal();
-        $result = $appraisal->addappraisal($AppraisalID,$ProductID,$ClientID,$Date,$Quantity);
+        $result = $appraisal->addappraisal($AppraisalID,$ProductID,$ClientName,$Date,$EndDate,$Quantity,$Remarks);
         if ($result) {
             return jok('添加成功！');
         }
@@ -328,9 +330,9 @@ class Manage extends BaseController
         $params = json_decode(file_get_contents("php://input"), true);
         $ProductID = $params['ProductID'];
         $ProductName = $params['ProductName'];
-        $Unit = $params['Unit'];
+        $Price = $params['Price'];
         $product = new Product();
-        $result = $product->addproduct($ProductID, $ProductName, $Unit);
+        $result = $product->addproduct($ProductID, $ProductName,$Price);
         if($result){
             return jok('添加成功');
         }
@@ -478,10 +480,9 @@ class Manage extends BaseController
         $data = Db::table('sale')
             ->alias('s')
             ->join(['appraisal'=>'a'],'s.AppraisalID=a.AppraisalID')
-            ->join(['client'=>'c'], 'a.ClientID=c.ClientID')
             ->join(['product'=>'p'], 'a.ProductID=p.ProductID')
             ->order('s.SaleID','desc')
-            ->field('s.SaleID,s.AppraisalID,a.ProductID,p.ProductName,a.ClientID,c.ClientName,s.Quantity,s.Date')
+            ->field('s.SaleID,s.AppraisalID,a.ProductID,p.ProductName,a.ClientName,s.Quantity,s.Date')
             ->select();
 
         return jok('success',$data);

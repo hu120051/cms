@@ -7,15 +7,17 @@ class Appraisal extends Model
 {
     protected $pk = 'AppraisalID';
 
-    public function addappraisal($AppraisalID,$ProductID,$ClientID,$Date,$Quantity)
+    public function addappraisal($AppraisalID,$ProductID,$ClientName,$Date,$EndDate,$Quantity,$Remarks)
     {
         $data = [
             'AppraisalID' => $AppraisalID,
             'ProductID' => $ProductID,
-            'ClientID' => $ClientID,
+            'ClientName' => $ClientName,
             'Date' => $Date,
+            'EndDate' => $EndDate,
             'Quantity' => $Quantity,
-            'Left_Quantity' => $Quantity
+            'Left_Quantity' => $Quantity,
+            'Remarks' => $Remarks,
         ];
         $this->insert($data);
         return true;

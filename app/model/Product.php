@@ -12,12 +12,12 @@ class Product extends Model
         return $this->order('ProductID','asc')->select();
     }
 
-    public function addproduct($ProductID, $ProductName, $Unit)
+    public function addproduct($ProductID, $ProductName,$Price)
     {
         $data = [
             'ProductID' => $ProductID,
             'ProductName' => $ProductName,
-            'Unit' => $Unit,
+            'Price' => $Price
         ];
         $this->insert($data);
         return true;

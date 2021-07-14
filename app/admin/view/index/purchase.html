@@ -16,8 +16,6 @@
     <el-table :data="purchase.slice((currentPage-1)*pageSize,currentPage*pageSize)">
       <el-table-column prop="PurchaseID" label="ID" width="70%">
       </el-table-column>
-      <el-table-column prop="SupplierID" label="供应商编号">
-      </el-table-column>
       <el-table-column prop="SupplierName" label="供应商名称">
       </el-table-column>
       <el-table-column prop="MaterialID" label="物料编号" >
@@ -57,7 +55,7 @@
   </el-main>
 
   <!-- 添加框 -->
-  <el-dialog title="物料入库" :visible.sync="dialogFormAdd" :modal-append-to-body='false'>
+  <el-dialog title="产品销售" :visible.sync="dialogFormAdd" :modal-append-to-body='false'>
     <el-form :model="formAdd" label-width="100px">
 
       <el-form-item prop="PurchaseID" label="进货编号">

@@ -109,10 +109,9 @@ class Manage extends BaseController
     public function getallpurchase(){
         $data = Db::table('stock_in')
             ->alias('p')
-            ->join(['supplier'=>'s'],'p.SupplierID=s.SupplierID')
             ->join(['material'=>'m'],'p.MaterialID=m.MaterialID')
             ->order('p.PurchaseID','desc')
-            ->field('p.PurchaseID,p.SupplierID,s.SupplierName,p.MaterialID,m.MaterialName,p.Date,p.Quantity,p.Amount')
+            ->field('p.PurchaseID,p.SupplierName,p.MaterialID,m.MaterialName,p.Date,p.Quantity,p.Amount')
             ->select();
         return jok('',$data);
 

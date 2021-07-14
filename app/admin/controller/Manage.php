@@ -173,6 +173,11 @@ class Manage extends BaseController
         $Remarks = $params['Remarks'];
         $Quantity = $params['Quantity'];
         $appraisal = new Appraisal();
+        if($params['Choose'] == true){
+            $product = new Product();
+            $temp = $product->getproductidbyout($ProductID);
+            $ProductID = $temp;
+        }
         $result = $appraisal->addappraisal($AppraisalID,$ProductID,$ClientName,$Date,$EndDate,$Quantity,$Remarks);
         if ($result) {
             return jok('添加成功！');
@@ -204,24 +209,6 @@ class Manage extends BaseController
      * @return \json
      */
 
-//        $data = Db::table('appraisal')
-//            ->where([
-//                'AppraisalID' => $AppraisalID
-//            ])
-//            ->field('ProductID,Left_Quantity')
-//            ->select()->toArray();
-//        $data = $data[0];
-//        $ProductID = $data['ProductID'];
-//        $LeftQuantity = $data['Left_Quantity'];
-//        $temp = Db::table('ingredient')
-//            ->where([
-//                'ProductID' => $ProductID
-//            ])
-//            ->field('MaterialID,BOM')
-//            ->select()->toArray();
-//        foreach ($temp as $key => $value){
-//            $temp[$key]['BOM'] = $value['BOM']*$LeftQuantity;
-//        }
     public function setcookie()
     {
         $params = json_decode(file_get_contents("php://input"), true);
@@ -329,10 +316,11 @@ class Manage extends BaseController
     public function addproduct(){
         $params = json_decode(file_get_contents("php://input"), true);
         $ProductID = $params['ProductID'];
+        $ProductClientID = $params['ProductClientID'];
         $ProductName = $params['ProductName'];
         $Price = $params['Price'];
         $product = new Product();
-        $result = $product->addproduct($ProductID, $ProductName,$Price);
+        $result = $product->addproduct($ProductID,$ProductClientID, $ProductName,$Price);
         if($result){
             return jok('添加成功');
         }
@@ -420,7 +408,7 @@ class Manage extends BaseController
             ->alias('pi')
             ->join(['product'=>'p'],'pi.ProductID=p.ProductID')
             ->order('pi.ProductInID','desc')
-            ->field('pi.ProductInID,pi.ProductID,p.ProductName,pi.Quantity,pi.AppraisalID,pi.Date,p.Unit')
+            ->field('pi.ProductInID,pi.ProductID,p.ProductName,pi.Quantity,pi.AppraisalID,pi.Date,p.Price')
             ->select();
 
         return jok('success',$data);

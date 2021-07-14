@@ -14,7 +14,9 @@
             </el-form-item>
         </el-form>
         <el-table :data="product.slice((currentPage-1)*pageSize,currentPage*pageSize)" >
-            <el-table-column prop="ProductID" label="ID">
+            <el-table-column prop="ProductID" label="内部产品编号">
+            </el-table-column>
+            <el-table-column prop="ProductClientID" label="客户产品编号">
             </el-table-column>
             <el-table-column prop="ProductName" label="产品名称">
             </el-table-column>
@@ -79,10 +81,13 @@
 
     <!-- 添加框 -->
     <el-dialog title="添加产品" :visible.sync="dialogFormAdd" :modal-append-to-body='false'>
-        <el-form :model="formAdd" label-width="100px">
+        <el-form :model="formAdd" label-width="120px">
 
-            <el-form-item prop="ProductID" label="产品编号">
+            <el-form-item prop="ProductID" label="内部产品编号" :rules="[{ required:true, message: '内部产品编号为必填项！' }]">
                 <el-input size="medium" autocomplete="off" v-model="formAdd.ProductID"></el-input>
+            </el-form-item>
+            <el-form-item prop="ProductClientID" label="客户产品编号">
+                <el-input size="medium" autocomplete="off" v-model="formAdd.ProductClientID"></el-input>
             </el-form-item>
             <el-form-item prop="ProductName" label="产品名称">
                 <el-input size="medium" autocomplete="off" v-model="formAdd.ProductName"></el-input>

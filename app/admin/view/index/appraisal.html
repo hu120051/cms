@@ -66,6 +66,13 @@
       <el-form-item prop="ClientName" label="客户名称">
         <el-input size="medium" autocomplete="off" v-model="formAdd.ClientName"></el-input>
       </el-form-item>
+      <el-form-item>
+        <el-switch
+                v-model="formAdd.Choose"
+                active-text="客户产品编号"
+                inactive-text="内部产品编号">
+        </el-switch>
+      </el-form-item>
       <el-form-item prop="ProductID" label="产品编号">
         <el-input size="medium" autocomplete="off" v-model="formAdd.ProductID"></el-input>
       </el-form-item>
@@ -88,7 +95,7 @@
                 placeholder="选择日期">
         </el-date-picker>
       </el-form-item>
-      <el-form-item>
+      <el-form-item prop="Remarks" label="备注">
         <el-input
                 type="textarea"
                 autosize
@@ -113,7 +120,7 @@
 
         },
         formAdd:{
-
+          Choose : false,
         },
         dialogFormAdd:false,
         currentPage: 1, // 当前页码
@@ -174,7 +181,7 @@
 
         clickAdd(){
           var that = this;
-          that.formAdd = {};
+
           that.dialogFormAdd = true;
         },
 
@@ -219,6 +226,7 @@
                         type: 'success'
                       });
                       that.dialogFormAdd = false;
+                      that.formAdd = {};
                       setTimeout(function () {
                         location.replace('');
                       }, 1000)

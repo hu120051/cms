@@ -12,15 +12,20 @@ class Product extends Model
         return $this->order('ProductID','asc')->select();
     }
 
-    public function addproduct($ProductID, $ProductName,$Price)
+    public function addproduct($ProductID,$ProductClientID, $ProductName,$Price)
     {
         $data = [
             'ProductID' => $ProductID,
+            'ProductClientID' => $ProductClientID,
             'ProductName' => $ProductName,
             'Price' => $Price
         ];
         $this->insert($data);
         return true;
+    }
+
+    public function getproductidbyout($ProductID){
+        return $this->where('ProductClientID','=',$ProductID)->value('ProductID');
     }
 
     public function productin($ProductID, $Quantity){

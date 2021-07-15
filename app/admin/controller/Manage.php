@@ -470,7 +470,7 @@ class Manage extends BaseController
             ->join(['appraisal'=>'a'],'s.AppraisalID=a.AppraisalID')
             ->join(['product'=>'p'], 'a.ProductID=p.ProductID')
             ->order('s.SaleID','desc')
-            ->field('s.SaleID,s.AppraisalID,a.ProductID,p.ProductName,a.ClientName,s.Quantity,s.Date')
+            ->field('s.SaleID,s.AppraisalID,a.ProductID,p.ProductName,p.Price,a.ClientName,s.Quantity,s.Date')
             ->select();
 
         return jok('success',$data);

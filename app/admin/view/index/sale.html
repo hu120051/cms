@@ -22,9 +22,13 @@
             </el-table-column>
             <el-table-column prop="ProductName" label="产品名称">
             </el-table-column>
+            <el-table-column prop="Price" label="产品单价">
+            </el-table-column>
             <el-table-column prop="ClientName" label="客户名称">
             </el-table-column>
             <el-table-column prop="Quantity" label="数量">
+            </el-table-column>
+            <el-table-column prop="Money" label="总价">
             </el-table-column>
             <el-table-column prop="Date" label="销售日期">
             </el-table-column>
@@ -147,6 +151,10 @@
                         .then(function (response)
                         {
                             that.sale = response.data.data;
+                            var i;
+                            for(i in that.sale){
+                                that.sale[i].Money = (that.sale[i].Quantity * that.sale[i].Price).toFixed(4);
+                            }
                         })
 
                 },

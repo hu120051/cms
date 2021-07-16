@@ -11,7 +11,7 @@ class StockOut extends Model
         $data = [
             'StockOutID' => $StockOutID,
             'AppraisalID' => $AppraisalID,
-            'Datetime' => $Date,
+            'Date' => $Date,
         ];
         $this->insert($data);
         return true;

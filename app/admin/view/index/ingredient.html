@@ -129,7 +129,7 @@
                 abc(){
                     var that = this;
                     that.formInline.ProductID = getCookie('ProductID');
-                    that.ProductName = getCookie('ProductName');
+                    that.ProductName = decodeURI(getCookie('ProductName'));
                     var that = this;
                     axios.post('manage/getproductingredient', that.formInline)
                         .then(function (response) {
@@ -146,7 +146,7 @@
 
                 onSubmit(){
                     var that = this;
-                    setTimeout(function(){that.ProductName = getCookie('ProductName');}, 200);
+                    setTimeout(function(){that.ProductName = decodeURI(getCookie('ProductName'));}, 200);
                     axios.post('manage/getproductingredient', that.formInline)
                         .then(function (response) {
                             that.ingredient = response.data.data;

@@ -109,6 +109,42 @@ class Manage extends BaseController
     public function getmateriallog(){
         $params = json_decode(file_get_contents("php://input"), true);
         $MaterialID = $params['MaterialID'];
+        setCookie('MaterialID',$MaterialID, time() + 3600, '/');
+        $MaterialName = Db::table('material')
+            ->where('MaterialID','=',$MaterialID)->value('MaterialName');
+        $MaterialName = urlencode($MaterialName);
+        setCookie('MaterialName',$MaterialName, time() + 3600, '/');
+        $in = Db::table('stock_in')
+            ->where('MaterialID','=',$MaterialID)
+            ->field('Date,Quantity,Symbol')
+            ->select()->toArray();
+
+        //格式化
+        $tags = array_map(function($in) {
+            return array(
+                'Date' => $in['Date'],
+                'Qty' => $in['Quantity'],
+                'Symbol' => $in['Symbol']
+            );
+        }, $in);
+        $in = $tags;
+
+        $out = Db::table('stock_out_quantity')
+            ->alias('soq')
+            ->where('soq.MaterialID','=',$MaterialID)
+            ->join(['stock_out'=>'so'],'soq.StockOutID = so.StockOutID')
+            ->field('so.Date,soq.Qty,so.Symbol')
+            ->select()->toArray();
+
+        $result = array_merge($in,$out);
+        //降序排列，按照“Date”字段排列
+        $Date_sort = array();
+        foreach ($result as $arr2) {
+            $Date_sort[] = $arr2['Date'];
+        }
+        array_multisort($Date_sort, SORT_DESC, $result);
+
+        return jok('',$result);
 
     }
 
@@ -207,9 +243,9 @@ class Manage extends BaseController
             ->join(['appraisal'=>'a'],'so.AppraisalID=a.AppraisalID')
             ->join(['stock_out_quantity'=>'q'],'so.StockOutID=q.StockOutID')
             ->join(['material'=>'m'],'q.MaterialID=m.materialID')
-            ->order('so.Datetime','desc')
+            ->order('so.Date','desc')
             ->order('so.StockOutID','desc')
-            ->field('so.StockOutID,so.AppraisalID,a.ProductID,a.Quantity,q.MaterialID,q.Qty,m.MaterialName,so.Datetime')
+            ->field('so.StockOutID,so.AppraisalID,a.ProductID,a.Quantity,q.MaterialID,q.Qty,m.MaterialName,so.Date')
             ->select();
         return jok('',$data);
     }
@@ -268,7 +304,7 @@ class Manage extends BaseController
     }
 
     /**
-     * 确定物料数量
+     * 添加出库记录
      *
      * @return \json
      */
@@ -349,7 +385,8 @@ class Manage extends BaseController
         $product = new Product();
         $ProductName = $product->where('ProductID','=',$ProductID)->value('ProductName');
         setCookie('ProductID',$ProductID, time() + 3600, '/');
-        setCookie('ProductName',$ProductName, time() + 3600, '/');
+        $productcode = urlencode($ProductName);
+        setCookie('ProductName',$productcode, time() + 3600, '/');
 //        $ingredient = new Ingredient();
 //        $data = $ingredient->getingredient($ProductID);
         $data = Db::table('ingredient')

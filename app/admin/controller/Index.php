@@ -202,4 +202,19 @@ class Index extends BaseController
         }
         return View::fetch('client');
     }
+
+    /**
+     * 物料出入库查询
+     *
+     * @return string
+     */
+    public function check()
+    {
+        $error = $this->access();
+        if($error)
+        {
+            return View::fetch('login');
+        }
+        return View::fetch('check');
+    }
 }

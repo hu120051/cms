@@ -55,16 +55,66 @@ class DataModel
         dump( $data['ProductID']);
     }
 
-    public function jointest(){
+    public function changekey(){
         $data = Db::table('sale')
             ->alias('s')
             ->join(['appraisal'=>'a'],'s.AppraisalID=a.AppraisalID')
-            ->join(['client'=>'c'], 'a.ClientID=c.ClientID')
             ->join(['product'=>'p'], 'a.ProductID=p.ProductID')
             ->order('s.SaleID','desc')
-            ->field('s.SaleID,s.AppraisalID,a.ProductID,p.ProductName,a.ClientID,c.ClientName,s.Quantity,s.Date')
-            ->select();
-        dump($data);
+            ->field('s.SaleID,s.AppraisalID,a.ProductID,p.ProductName,a.ClientName,s.Quantity,s.Date')
+            ->select()->toArray();
+        $tags = array_map(function($data) {
+            return array(
+                'label' => $data['SaleID'],
+                'value' => $data['AppraisalID'],
+                'test' => $data['ClientName']
+            );
+        }, $data);
+        dump($tags);
     }
 
+    public function getmateriallog(){
+        $MaterialID = '58010001';
+        $in = Db::table('stock_in')
+            ->where('MaterialID','=',$MaterialID)
+            ->field('Date,Quantity,Symbol')
+            ->select()->toArray();
+
+        //格式化
+        $tags = array_map(function($in) {
+            return array(
+                'Date' => $in['Date'],
+                'Qty' => $in['Quantity'],
+                'Symbol' => $in['Symbol']
+            );
+        }, $in);
+        $in = $tags;
+        $out = Db::table('stock_out_quantity')
+            ->alias('soq')
+            ->where('soq.MaterialID','=','58010001')
+            ->join(['stock_out'=>'so'],'soq.StockOutID = so.StockOutID')
+            ->field('so.Date,soq.Qty,so.Symbol')
+            ->select()->toArray();
+        $in = array_merge($in,$out);
+        //升序排列，按照“juli”字段排列
+        $juli_sort = array();
+        foreach ($in as $arr2) {
+            $juli_sort[] = $arr2['Date'];
+}
+        array_multisort($juli_sort, SORT_DESC, $in);
+        dump($in);
+
+
+    }
+
+    public function checkout(){
+        $out = Db::table('stock_out_quantity')
+            ->alias('soq')
+            ->where('soq.MaterialID','=','58010001')
+            ->join(['stock_out'=>'so'],'soq.StockOutID = so.StockOutID')
+            ->field('so.Date,soq.Qty,so.Symbol')
+            ->select()->toArray();
+
+        dump($out);
+    }
 }

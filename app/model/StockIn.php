@@ -7,10 +7,10 @@ class StockIn extends Model
 {
     protected $pk = 'PurchaseID';
 
-    public function addpurchase($PurchaseID, $SupplierID, $MaterialID, $Date, $Quantity, $Amount){
+    public function addpurchase($PurchaseID, $SupplierName, $MaterialID, $Date, $Quantity, $Amount){
         $data = [
             'PurchaseID' => $PurchaseID,
-            'SupplierID' => $SupplierID,
+            'SupplierName' => $SupplierName,
             'MaterialID' => $MaterialID,
             'Date' => $Date,
             'Quantity' => $Quantity,

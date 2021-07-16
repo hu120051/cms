@@ -90,7 +90,7 @@ class Manage extends BaseController
     /**
      * 删除物料
      *
-     *
+     * @return \json
      */
     public function deletematerial(){
         $params = json_decode(file_get_contents("php://input"), true);
@@ -100,6 +100,18 @@ class Manage extends BaseController
 
         return jok('删除成功');
     }
+
+    /**
+     * 获取物料出入库记录
+     *
+     * @return \json
+     */
+    public function getmateriallog(){
+        $params = json_decode(file_get_contents("php://input"), true);
+        $MaterialID = $params['MaterialID'];
+
+    }
+
 
     /**
      * 获取入库记录
@@ -127,15 +139,14 @@ class Manage extends BaseController
         //todo: 自动生成可选供应商
         $params = json_decode(file_get_contents("php://input"), true);
         $PurchaseID = $params['PurchaseID'];
-        $SupplierID = $params['SupplierID'];
+        $SupplierName = $params['SupplierName'];
         $MaterialID = $params['MaterialID'];
-        $Date = $params['Date'];
         $Quantity = $params['Quantity'];
         $Amount = $params['Amount'];
         $material = new \app\model\Material();
         $purchase = new StockIn();
         $result1 = $material->addmaterialstock($MaterialID, $Quantity);
-        $result2 = $purchase->addpurchase($PurchaseID, $SupplierID, $MaterialID, $Date, $Quantity, $Amount);
+        $result2 = $purchase->addpurchase($PurchaseID, $SupplierName, $MaterialID, $Date, $Quantity, $Amount);
         if ($result1&&$result2) {
             return jok('添加成功！');
         }

@@ -15,6 +15,7 @@ Route::rule('ingredient','admin/index/ingredient');
 Route::rule('sale','admin/index/sale');
 Route::rule('supplier','admin/index/supplier');
 Route::rule('client','admin/index/client');
+Route::rule('check','admin/index/check');
 
 return [
     // pathinfo分隔符

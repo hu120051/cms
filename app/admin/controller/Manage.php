@@ -15,9 +15,6 @@ use app\model\StockOut;
 use app\model\StockOutQuantity;
 use app\model\Supplier;
 use think\facade\Db;
-use think\facade\View;
-use think\Model;
-use think\response\Json;
 
 //前端通过axios_post传一个json对象到后端，后端用input函数接收，并不是接收前端input标签中的信息！
 
@@ -179,6 +176,7 @@ class Manage extends BaseController
         $MaterialID = $params['MaterialID'];
         $Quantity = $params['Quantity'];
         $Amount = $params['Amount'];
+        $Date = $params['Date'];
         $material = new \app\model\Material();
         $purchase = new StockIn();
         $result1 = $material->addmaterialstock($MaterialID, $Quantity);

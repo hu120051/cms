@@ -231,6 +231,19 @@ class Manage extends BaseController
     }
 
     /**
+     * 添加评审表
+     *
+     * @return \json
+     */
+    public function deleteappraisal(){
+        $params = json_decode(file_get_contents("php://input"), true);
+        $AppraisalID = $params['AppraisalID'];
+        $appraisal = new Appraisal();
+        $appraisal->where('AppraisalID','=',$AppraisalID)->delete();
+        return jok('删除成功！');
+    }
+
+    /**
      * 获取出库记录
      *
      * @return \json
@@ -363,14 +376,67 @@ class Manage extends BaseController
         $ProductID = $params['ProductID'];
         $ProductClientID = $params['ProductClientID'];
         $ProductName = $params['ProductName'];
+        $Type = $params['Type'];
         $Price = $params['Price'];
+        $ClientName01 = $params['ClientName01'];
+        $ClientName02 = $params['ClientName02'];
         $product = new Product();
-        $result = $product->addproduct($ProductID,$ProductClientID, $ProductName,$Price);
+        $result = $product->addproduct($ProductID,$ProductClientID, $ProductName,$Type, $Price,$ClientName01,$ClientName02);
         if($result){
             return jok('添加成功');
         }
         return jerr('未知错误，添加失败');
     }
+
+    /**
+     * 删除产品
+     *
+     * @return \json
+     */
+    public function deleteproduct(){
+        $params = json_decode(file_get_contents("php://input"), true);
+        $ProductID = $params['ProductID'];
+        $product = new Product();
+        $product->where('ProductID','=',$ProductID)->delete();
+        return jok('删除成功');
+    }
+
+    /**
+     * 修改产品信息
+     *
+     * @return \json
+     */
+    public function changeproduct(){
+        $params = json_decode(file_get_contents("php://input"), true);
+        $ProductID = $params['ProductID'];
+        $ProductName = $params['ProductName'];
+        $ProductClientID = $params['ProductClientID'];
+        $Type = $params['Type'];
+        $Price = $params['Price'];
+        $ClientName01 = $params['ClientName01'];
+        $ClientName02 = $params['ClientName02'];
+        $product = new Product();
+        $result = $product->changeproduct($ProductID,$ProductClientID, $ProductName,$Type, $Price,$ClientName01,$ClientName02);
+        if($result){
+            return jok('添加成功');
+        }
+        return jerr('未知错误，添加失败');
+    }
+
+
+    /**
+     * 获取产品信息
+     *
+     * @return \json
+     */
+    public function getproduct(){
+        $params = json_decode(file_get_contents("php://input"), true);
+        $ProductID = $params['ProductID'];
+        $product = new Product();
+        $data = $product->where('ProductID','=',$ProductID)->select()->toArray();
+        return jok('',$data[0]);
+    }
+
 
     /**
      * 获取指定产品配料表

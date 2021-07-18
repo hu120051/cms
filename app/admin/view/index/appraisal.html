@@ -185,16 +185,15 @@
           that.dialogFormAdd = true;
         },
 
-        //todo: 删除同时扣除加入进Stock字段的值
         postDelete(row){
           var that = this;
-          this.$confirm('确认删除该物料？', '提示', {
+          this.$confirm('确认删除该评审单？', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
           }).then(()=>{
-            axios.post('user/deleteuser', Object.assign({}, PostBase, {
-              pk: row.uid
+            axios.post('manage/deleteappraisal', Object.assign({}, PostBase, {
+              AppraisalID: row.AppraisalID
             }))
                     .then(function (response) {
                       if (response.data.code == CODE_SUCCESS) {

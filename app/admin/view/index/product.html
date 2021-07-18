@@ -20,9 +20,13 @@
             </el-table-column>
             <el-table-column prop="ProductName" label="产品名称">
             </el-table-column>
+            <el-table-column prop="Type" label="类型">
+            </el-table-column>
             <el-table-column prop="Stock" label="库存量">
             </el-table-column>
             <el-table-column prop="Price" label="单价">
+            </el-table-column>
+            <el-table-column prop="ClientName01" label="客户名称">
             </el-table-column>
             <el-table-column label="操作" width="180">
                 <template slot-scope="scope">
@@ -54,23 +58,28 @@
     </el-main>
     <!-- 修改框 -->
     <el-dialog title="修改用户信息" :visible.sync="dialogFormEdit" :modal-append-to-body='false'>
-        <el-form :model="formEdit" ref="formEdit">
+        <el-form :model="formEdit"  label-width="150px">
 
-            <el-form-item prop="uid" label="uid(不可更改)" >
-                <el-input size="medium" autocomplete="off" v-model="formEdit.uid" readonly="true"></el-input>
+            <el-form-item prop="ProductID" label="内部编号(不可更改)" >
+                <el-input size="medium" autocomplete="off" v-model="formEdit.ProductID" readonly="true"></el-input>
             </el-form-item>
-            <el-form-item prop="username" label="用户名(不可更改)">
-                <el-input size="medium" autocomplete="off" v-model="formEdit.username" readonly="true"></el-input>
+            <el-form-item prop="ProductName" label="产品名称">
+                <el-input size="medium" autocomplete="off" v-model="formEdit.ProductName"></el-input>
             </el-form-item>
-            <el-form-item prop="name" label="姓名" :label-width="50">
-                <el-input size="medium" autocomplete="off" v-model="formEdit.name"></el-input>
+            <el-form-item prop="ProductClientID" label="客户产品编号">
+                <el-input size="medium" autocomplete="off" v-model="formEdit.ProductClientID"></el-input>
             </el-form-item>
-            <el-form-item prop="group" label="用户组" :label-width="50">
-                <el-radio-group v-model="formEdit.group">
-                    <el-radio label="superadmin">超级管理员</el-radio>
-                    <el-radio label="admin">管理员</el-radio>
-                    <el-radio label="staff">员工</el-radio>
-                </el-radio-group>
+            <el-form-item prop="Price" label="价格">
+                <el-input size="medium" autocomplete="off" v-model="formEdit.Price"></el-input>
+            </el-form-item>
+            <el-form-item prop="Type" label="类型">
+                <el-input size="medium" autocomplete="off" v-model="formEdit.Type"></el-input>
+            </el-form-item>
+            <el-form-item prop="ClientName01" label="1号客户名称">
+                <el-input size="medium" autocomplete="off" v-model="formEdit.ClientName01"></el-input>
+            </el-form-item>
+            <el-form-item prop="ClientName02" label="2号客户名称">
+                <el-input size="medium" autocomplete="off" v-model="formEdit.ClientName02"></el-input>
             </el-form-item>
 
         </el-form>
@@ -92,8 +101,17 @@
             <el-form-item prop="ProductName" label="产品名称">
                 <el-input size="medium" autocomplete="off" v-model="formAdd.ProductName"></el-input>
             </el-form-item>
+            <el-form-item prop="Type" label="产品类型">
+                <el-input size="medium" autocomplete="off" v-model="formAdd.Type"></el-input>
+            </el-form-item>
             <el-form-item prop="Price" label="产品单价">
                 <el-input size="medium" autocomplete="off" v-model="formAdd.Price"></el-input>
+            </el-form-item>
+            <el-form-item prop="ClientName01" label="客户名称01">
+                <el-input size="medium" autocomplete="off" v-model="formAdd.ClientName01"></el-input>
+            </el-form-item>
+            <el-form-item prop="ClientName02" label="客户名称02">
+                <el-input size="medium" autocomplete="off" v-model="formAdd.ClientName02"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -183,8 +201,8 @@
                         cancelButtonText: '取消',
                         type: 'warning'
                     }).then(()=>{
-                        axios.post('user/deleteuser', Object.assign({}, PostBase, {
-                            pk: row.uid
+                        axios.post('manage/deleteproduct', Object.assign({}, PostBase, {
+                            ProductID: row.ProductID
                         }))
                             .then(function (response) {
                                 if (response.data.code == CODE_SUCCESS) {
@@ -208,8 +226,8 @@
                 clickEdit(row){
                     var that = this;
                     that.formEdit = row;
-                    axios.post('user/getdata', Object.assign({}, PostBase, {
-                        pk: row.uid
+                    axios.post('manage/getproduct', Object.assign({}, PostBase, {
+                        ProductID: row.ProductID
                     }))
                         .then(function (response) {
                             if (response.data.code == CODE_SUCCESS) {
@@ -248,7 +266,7 @@
                 },
                 postEdit(){
                     var that = this;
-                    axios.post('user/updateuser', Object.assign({}, PostBase, that.formEdit))
+                    axios.post('manage/changeproduct', Object.assign({}, PostBase, that.formEdit))
                         .then(function (response) {
                             if (response.data.code == CODE_SUCCESS) {
                                 that.$message({

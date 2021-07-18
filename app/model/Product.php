@@ -12,13 +12,16 @@ class Product extends Model
         return $this->order('ProductID','asc')->select();
     }
 
-    public function addproduct($ProductID,$ProductClientID, $ProductName,$Price)
+    public function addproduct($ProductID,$ProductClientID, $ProductName,$Type, $Price,$ClientName01,$ClientName02)
     {
         $data = [
             'ProductID' => $ProductID,
             'ProductClientID' => $ProductClientID,
             'ProductName' => $ProductName,
-            'Price' => $Price
+            'Type' => $Type,
+            'Price' => $Price,
+            'ClientName01' => $ClientName01,
+            'ClientName02' => $ClientName02,
         ];
         $this->insert($data);
         return true;
@@ -42,5 +45,17 @@ class Product extends Model
         $this->where('ProductID', '=', $ProductID)->update([
             'Stock' => $newquantity,
         ]);
+    }
+
+    public function changeproduct($ProductID,$ProductClientID, $ProductName,$Type, $Price,$ClientName01,$ClientName02){
+        $this->where('ProductID','=',$ProductID)->update([
+            'ProductClientID' => $ProductClientID,
+            'ProductName' => $ProductName,
+            'Type' => $Type,
+            'Price' => $Price,
+            'ClientName01' => $ClientName01,
+            'ClientName02' => $ClientName02,
+        ]);
+        return true;
     }
 }

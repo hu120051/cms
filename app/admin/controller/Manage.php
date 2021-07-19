@@ -618,6 +618,34 @@ class Manage extends BaseController
     }
 
     /**
+     * 删除销售记录
+     *
+     * @return \json
+     */
+    public function deletesale(){
+        $params = json_decode(file_get_contents("php://input"), true);
+        $SaleID = $params['SaleID'];
+        $AppraisalID = $params['AppraisalID'];
+        $Quantity = $params['Quantity'];
+        $ProductID = $params['ProductID'];
+
+
+        $appraisal = new Appraisal();
+
+        /*  修改评审表中剩余需求量  */
+        $appraisal->backproduct($AppraisalID,$Quantity);
+
+        /*  修改产品库存  */
+        $product = new Product();
+        $product->productin($ProductID, $Quantity);
+
+        /*  删除记录  */
+        $sale = new Sale();
+        $sale->deletesale($SaleID);
+        return jok();
+    }
+
+    /**
      * 获取全部供应商
      *
      * @return \json

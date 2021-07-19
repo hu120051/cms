@@ -35,4 +35,12 @@ class Appraisal extends Model
             'Left_Quantity' => $newquantity,
         ]);
     }
+
+    public function backproduct($AppraisalID,$Quantity){
+        $oldquantity = $this->where('AppraisalID', $AppraisalID)->value('Left_Quantity');
+        $newquantity = $oldquantity + $Quantity;
+        $this->where('AppraisalID', $AppraisalID)->update([
+            'Left_Quantity' => $newquantity,
+        ]);
+    }
 }

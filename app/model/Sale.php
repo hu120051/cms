@@ -17,4 +17,8 @@ class Sale extends Model
         ];
         $this->insert($data);
     }
+
+    public function deletesale($SaleID){
+        $this->where('SaleID','=',$SaleID)->delete();
+    }
 }
